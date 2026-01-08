@@ -10,7 +10,7 @@ Servo escMotors[numMotors];
 // ESC values
 constexpr int MIN_THROTTLE = 1200; // Minimum throttle value (motors off)
 constexpr int MAX_THROTTLE = 20000; // Maximum throttle value
-constexpr int THROTTLE_STEP = 10;  // How much to change throttle by with each keypress
+constexpr int THROTTLE_STEP = 100;  // How much to change throttle by with each keypress
 int currentThrottle = MIN_THROTTLE;
 
 // Motor status tracking
