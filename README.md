@@ -5,7 +5,7 @@
 
 Repo/Docs zu unserem Softwareprojekt Q4 2025/26
 
-[Docs](/wiki)
+[Docs](https://github.com/RandomlyCoded/InfoDrohne/wiki)
 
 ## Inhaltsverzeichnis
 
