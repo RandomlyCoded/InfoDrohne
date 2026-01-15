@@ -11,3 +11,10 @@ Repo/Docs zu unserem Softwareprojekt Q4 2025/26
 
 ## Beschreibung der Projektide
 
+Die Idee ist es, einen ESP32-basierten Quadcopter zu bauen, der hoffentlich am Ende des Projekts fliegt.
+Dabei werden wir auf einem Projekt aus dem letzten Schuljahr aufbauen.
+
+Die Steuerung erfolgt über eine mithilfe von [Qt](https://qt.io) geschriebenen App.
+
+Außerdem soll so viel wie möglich mithilfe eines 3D-Druckers gedruckt sein, wie z.B. das Gehäuse und
+die Propellerblätter.
