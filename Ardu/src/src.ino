@@ -78,7 +78,6 @@ void testSingleMotor(int motorIndex) {
     
     if (motorAttached[motorIndex]) {
       // Pulse the motor to a higher value for half a second
-      int originalValue = currentThrottle;
       
       // Set just this motor to a higher value
       escMotors[motorIndex].writeMicroseconds(4000);
@@ -86,7 +85,7 @@ void testSingleMotor(int motorIndex) {
       delay(1000);
       
       // Return to original value
-      escMotors[motorIndex].writeMicroseconds(originalValue);
+      escMotors[motorIndex].writeMicroseconds(currentThrottle);
       Serial.println("Test complete");
     } else {
       Serial.println("ERROR: Motor not attached!");
