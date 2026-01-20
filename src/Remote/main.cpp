@@ -1,3 +1,5 @@
+#include "drone.h"
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -12,6 +14,8 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
+
+    qmlRegisterType<randomly::Drone>("DroneControl", 1, 0, "Drone");
     engine.loadFromModule("Remote", "Main");
 
     return app.exec();
