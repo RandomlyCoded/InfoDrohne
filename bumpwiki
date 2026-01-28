@@ -1,3 +1,3 @@
 #!/bin/bash
 
-git commit InfoDrohne.wiki/ -m "commit bump"
+git commit InfoDrohne.wiki/ -m "wiki commit bump"
