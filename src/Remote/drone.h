@@ -36,6 +36,9 @@ private:
     int m_propCount = 4; // hardcode for now
     QList<int> m_throttles;
 
+    const QHostAddress m_drone = QHostAddress("192.168.4.1"); // 127.0.4.0
+    const quint16 m_port = 80;
+
     QNetworkAccessManager *m_network;
 };
 

@@ -21,7 +21,7 @@ Drone::Drone(QObject *parent)
     , m_throttles{QList<int>(m_propCount, 0)}
 {
     qCInfo(lcDrone) << "init";
-    m_network->connectToHost("InfoDrone", 8080);
+    m_network->connectToHost(m_drone.toString(), m_port);
     connect(m_network, &QNetworkAccessManager::finished, this, [this] (QNetworkReply *r){
         qCInfo(lcDrone) << r->request().url().toDisplayString() << ":" << r->error();
     });
@@ -50,7 +50,9 @@ bool Drone::setThrottle(QList<int> throttles)
 
 bool Drone::sendThrottle()
 {
-    auto req = QNetworkRequest({"http://InfoDrone:8080/throttle"});
+    const static auto url = QUrl{QString("http://%1:%2/throttle").arg(m_drone.toString(), QString::number(m_port))};
+    auto req = QNetworkRequest(url);
+
     req.setHeader(QNetworkRequest::ContentTypeHeader, "raw/uint16[]");
 
     const auto payload = prepareThrottlePayload(m_throttles);
