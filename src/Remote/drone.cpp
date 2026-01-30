@@ -22,12 +22,9 @@ Drone::Drone(QObject *parent)
 {
     qCInfo(lcDrone) << "init";
     m_network->connectToHost(m_drone.toString(), m_port);
-    connect(m_network, &QNetworkAccessManager::finished, this, [this] (QNetworkReply *r){
-        qCInfo(lcDrone) << r->request().url().toDisplayString() << ":" << r->error();
-    });
-
-    connect(m_network, &QNetworkAccessManager::sslErrors, this, [this] (const QNetworkReply *r, QList<QSslError> errors) {
-        qCInfo(lcDrone) << errors;
+    connect(m_network, &QNetworkAccessManager::finished, this, [this] (QNetworkReply *r) {
+        if (r->error() != QNetworkReply::NoError)
+        qCInfo(lcDrone) << r->request().url().toDisplayString() << ":" << r->error() << "(" << r->errorString() << ")";
     });
 }
 
