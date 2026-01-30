@@ -28,10 +28,6 @@ Drone::Drone(QObject *parent)
     });
 }
 
-int Drone::propCount() const
-{
-    return m_propCount;
-}
 
 bool Drone::setThrottle(QList<int> throttles)
 {

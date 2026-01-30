@@ -15,7 +15,7 @@ class Drone : public QObject
 public:
     explicit Drone(QObject *parent = nullptr);
 
-    int propCount() const;
+    constexpr int propCount() const { return m_propCount; }
 
     QList<int> throttles() const;
 
@@ -33,7 +33,7 @@ signals:
 
 private:
     QByteArray prepareThrottlePayload(const QList<int> throttles);
-    int m_propCount = 4; // hardcode for now
+    constexpr static int m_propCount = 4; // hardcode for now
     QList<int> m_throttles;
 
     const QHostAddress m_drone = QHostAddress("192.168.4.1"); // 127.0.4.0
