@@ -24,7 +24,6 @@ public slots:
 
     bool sendThrottle();
     void setSingleThrottle(int index, int value);
-    bool maybeSendThrottle();
 
     void forceClampThrottles();
 

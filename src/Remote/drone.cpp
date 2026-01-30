@@ -55,18 +55,6 @@ bool Drone::sendThrottle()
 void Drone::setSingleThrottle(int index, int value)
 {
     m_throttles[index] = value;
-
-    // no update since this is only intended to be called from QML
-    // but we need to send the updated throttle to the drone
-    maybeSendThrottle();
-}
-
-bool Drone::maybeSendThrottle()
-{
-    if (false) // TODO: timing logic, e.g. wait like 10 ms between sending data
-        return false;
-
-    return sendThrottle();
 }
 
 void Drone::forceClampThrottles()
