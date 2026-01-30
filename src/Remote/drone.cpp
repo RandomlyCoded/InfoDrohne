@@ -17,39 +17,43 @@ quint16 clamp_u16(int v) {
 
 Drone::Drone(QObject *parent)
     : QObject{parent}
-    , m_network(new QNetworkAccessManager{this})
     , m_throttles{QList<int>(m_propCount, 0)}
+    , m_sendSocket(new QUdpSocket{this})
+    , m_receiveSocket(new QUdpSocket{this})
+    , m_udpTimer(new QTimer{this})
 {
-    qCInfo(lcDrone) << "init";
-    m_network->connectToHost(m_drone.toString(), m_port);
-    connect(m_network, &QNetworkAccessManager::finished, this, [this] (QNetworkReply *r) {
-        if (r->error() != QNetworkReply::NoError)
-        qCInfo(lcDrone) << r->request().url().toDisplayString() << ":" << r->error() << "(" << r->errorString() << ")";
+    m_receiveSocket->bind(8081);
+
+    connect(m_receiveSocket, &QUdpSocket::readyRead, this, [&] {
+        while (m_receiveSocket->hasPendingDatagrams())
+        {
+            QByteArray datagram;
+            datagram.resize (m_receiveSocket->pendingDatagramSize ());
+            QDataStream str (&datagram, QUdpSocket::ReadOnly);
+            m_receiveSocket->readDatagram (datagram.data (), datagram.size ());
+
+            qCDebug(lcDrone) << "[DEBUG] Received UDP datagram:" << datagram;
+        }
     });
+
+    connect(m_udpTimer, &QTimer::timeout, this, &Drone::sendThrottle);
+    m_udpTimer->setInterval(10);
+    m_udpTimer->start();
 }
 
-
-bool Drone::setThrottle(QList<int> throttles)
+void Drone::setThrottle(QList<int> throttles)
 {
     Q_ASSERT_X(throttles.size() == m_propCount, Q_FUNC_INFO, "throttle count missmatch");
 
     m_throttles = throttles;
     emit throttlesUpdated_QML();
-
-    return sendThrottle();
 }
 
 bool Drone::sendThrottle()
 {
-    const static auto url = QUrl{QString("http://%1:%2/throttle").arg(m_drone.toString(), QString::number(m_port))};
-    auto req = QNetworkRequest(url);
-
-    req.setHeader(QNetworkRequest::ContentTypeHeader, "raw/uint16[]");
-
     const auto payload = prepareThrottlePayload(m_throttles);
-    m_network->post(req, payload);
 
-    return true;
+    return m_sendSocket->writeDatagram(payload, m_drone, m_port) == m_propCount * sizeof(quint16);
 }
 
 void Drone::setSingleThrottle(int index, int value)
