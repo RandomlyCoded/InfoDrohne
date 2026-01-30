@@ -40,8 +40,6 @@ bool Drone::setThrottle(QList<int> throttles)
     m_throttles = throttles;
     emit throttlesUpdated_QML();
 
-    qCDebug(lcDrone) << "setting" << throttles;
-
     return sendThrottle();
 }
 
@@ -54,7 +52,6 @@ bool Drone::sendThrottle()
 
     const auto payload = prepareThrottlePayload(m_throttles);
     m_network->post(req, payload);
-    qCInfo(lcDrone) << payload.toHex('.');
 
     return true;
 }
