@@ -4,7 +4,8 @@
 
 using uint16 = unsigned short;
 
-NetworkServer server (80);
+NetworkUDP udp;
+NetworkClient remote;
 
 void setup () {
   pinMode (LED_BUILTIN, OUTPUT);
@@ -16,65 +17,25 @@ void setup () {
   IPAddress myIP = WiFi.softAPIP ();
   Serial.print ("AP IP address: ");
   Serial.println (myIP);
-  server.begin ();
+  udp.begin (8080);
 
   Serial.println ("Server started");
 }
 
-NetworkClient client;
-
-String readLine () {
-  String line = "";
-  while (client.available ()) {
-    char c = client.read ();
-    if (c == '\n')
-      break;
-    
-    if (c != '\r') // who cares about \r?
-      line += c;
-  }
-
-  return line;
-}
-
-void discardHeaders () {
-  // the body starts after the first 0-length line
-  while (readLine ().length () > 0)
-    ;
-}
-
-void acceptThrottle () {
-  discardHeaders ();
-
-  uint16 throttles[4] = {0, 0, 0, 0};
-
-  for (int i = 0; i < 4; ++i) {
-    char lower  = client.read ();
-    char higher = client.read ();
-
-    throttles[i] = uint16(lower) | (uint16(higher) << 8);
-    Serial.print (i);
-    Serial.print (" -> ");
-    Serial.println (throttles[i]);
-  }
-}
-
 void loop () {
-  if (!client.connected () || !client)
-    client = server.accept ();
+  int packetSize = udp.parsePacket();
+  if (packetSize) {
+    Serial.print("Received packet from: ");
+    Serial.print(udp.remoteIP());
+    Serial.print(":");
+    Serial.println(udp.remotePort());
 
-  if (client && client.connected() && client.available ()) {
-    String command = readLine();
-
-    if (command.startsWith("POST /throttle")) {
-      acceptThrottle();
-      Serial.println("throttle accepted");
-      client.print("throttle received");
-    } else {
-      client.print("unknown command: ");
-      client.print(command);
-    }
+    char buffer[255];
+    int len = udp.read(buffer, 255);
+    uint16 *throttles = (uint16*)buffer;
+    for (int i = 0; i < 4; ++i)
+      Serial.printf("%d -> %d\n", i, throttles[i]);
   }
-
-  delay(50);
+  
+  return;
 }
