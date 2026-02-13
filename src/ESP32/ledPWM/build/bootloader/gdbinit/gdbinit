@@ -1,2 +1,0 @@
-source /home/david/projects/InfoDrohne/src/ESP32/ledPWM/build/bootloader/gdbinit/symbols
-source /home/david/projects/InfoDrohne/src/ESP32/ledPWM/build/bootloader/gdbinit/connect
