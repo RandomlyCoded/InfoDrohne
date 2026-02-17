@@ -18,3 +18,8 @@ Die Steuerung erfolgt über eine mithilfe von [Qt](https://qt.io) geschriebenen 
 
 Außerdem soll so viel wie möglich mithilfe eines 3D-Druckers gedruckt sein, wie z.B. das Gehäuse und
 die Propellerblätter.
+
+## Abhängigkeiten
+
+[ESP32Servo](https://github.com/madhephaestus/ESP32Servo?tab=readme-ov-file)
+[Qt](https://qt.io) Core, Gui, QML, Quick, Bluetooth, Network
