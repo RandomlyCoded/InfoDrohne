@@ -12,7 +12,7 @@ Window {
 
     property var throttleStatus: [true, true, true, true]
 
-    Drone {
+    UdpDrone {
         id: drone
     }
 

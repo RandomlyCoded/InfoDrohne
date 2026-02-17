@@ -9,7 +9,7 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcDrone, "randomly.Drone");
 
-quint16 clamp_u16(int v) {
+const quint16 clamp_u16(const int v) {
     return qMin(qMax(0, v), INT16_MAX);
 }
 
@@ -18,30 +18,9 @@ quint16 clamp_u16(int v) {
 Drone::Drone(QObject *parent)
     : QObject{parent}
     , m_throttles{QList<int>(m_propCount, 0)}
-    , m_sendSocket(new QUdpSocket{this})
-    , m_receiveSocket(new QUdpSocket{this})
-    , m_udpTimer(new QTimer{this})
-{
-    m_receiveSocket->bind(8081);
+{}
 
-    connect(m_receiveSocket, &QUdpSocket::readyRead, this, [&] {
-        while (m_receiveSocket->hasPendingDatagrams())
-        {
-            QByteArray datagram;
-            datagram.resize (m_receiveSocket->pendingDatagramSize ());
-            QDataStream str (&datagram, QUdpSocket::ReadOnly);
-            m_receiveSocket->readDatagram (datagram.data (), datagram.size ());
-
-            qCDebug(lcDrone) << "[DEBUG] Received UDP datagram:" << datagram;
-        }
-    });
-
-    connect(m_udpTimer, &QTimer::timeout, this, &Drone::sendThrottle);
-    m_udpTimer->setInterval(10);
-    m_udpTimer->start();
-}
-
-void Drone::setThrottle(QList<int> throttles)
+void Drone::setThrottle(const QList<int> throttles)
 {
     Q_ASSERT_X(throttles.size() == m_propCount, Q_FUNC_INFO, "throttle count missmatch");
 
@@ -49,14 +28,7 @@ void Drone::setThrottle(QList<int> throttles)
     emit throttlesUpdated_QML();
 }
 
-bool Drone::sendThrottle()
-{
-    const auto payload = prepareThrottlePayload(m_throttles);
-
-    return m_sendSocket->writeDatagram(payload, m_drone, m_port) == m_propCount * sizeof(quint16);
-}
-
-void Drone::setSingleThrottle(int index, int value)
+void Drone::setSingleThrottle(const int index, const int value)
 {
     m_throttles[index] = value;
 }
@@ -76,16 +48,10 @@ QByteArray Drone::prepareThrottlePayload(const QList<int> throttles)
     s.setByteOrder(QDataStream::LittleEndian);
 
     // writing the list directly would add separators etc.
-    for (const auto t: throttles) {
+    for (const auto t: throttles)
         s << clamp_u16(t);
-    }
 
     return payload;
-}
-
-QList<int> Drone::throttles() const
-{
-    return m_throttles;
 }
 
 } // namespace randomly

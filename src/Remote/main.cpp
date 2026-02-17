@@ -1,4 +1,4 @@
-#include "drone.h"
+#include "udpdrone.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 
-    qmlRegisterType<randomly::Drone>("DroneControl", 1, 0, "Drone");
+    qmlRegisterType<randomly::UdpDrone>("DroneControl", 1, 0, "UdpDrone");
     engine.loadFromModule("Remote", "Main");
 
     return app.exec();
