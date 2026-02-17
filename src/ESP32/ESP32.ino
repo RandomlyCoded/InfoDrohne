@@ -37,6 +37,8 @@ void setup () {
   udp.begin (8080);
 
   Serial.println ("Server started");
+  resetMotors ();
+  Serial.println ("ready!");
 }
 
 void loop () {
