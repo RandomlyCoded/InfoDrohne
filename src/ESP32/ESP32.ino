@@ -43,7 +43,7 @@ void setup () {
 
 void loop () {
   bool buttonPressed = analogRead(PIN_button) > 4000;
-  if (buttonPressed && !lastButtonState) {
+  if (buttonPressed && !lastButtonState && false) { // we don't support switching rn
     btMode ^= 1;
   }
 
