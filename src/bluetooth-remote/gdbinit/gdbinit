@@ -1,0 +1,2 @@
+source /home/david/projects/InfoDrohne/src/bluetooth-remote/gdbinit/symbols
+source /home/david/projects/InfoDrohne/src/bluetooth-remote/gdbinit/connect
