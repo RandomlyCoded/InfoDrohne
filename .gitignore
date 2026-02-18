@@ -1,4 +1,7 @@
-*/build/
+**/build/
+**/CMakeFiles/
+**/CMakeCache.txt
+
 
 packForBunk
 *-Drohne.zip
@@ -7,3 +10,5 @@ arduino-ln
 *.3mf
 
 InfoDrohne.wiki/*
+
+
