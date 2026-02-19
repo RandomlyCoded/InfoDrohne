@@ -2,13 +2,15 @@
 #include <WiFi.h>
 
 constexpr int numMotors = 4;
-constexpr int escPins[numMotors] = {32, 25, 26, 27};
+constexpr int escPins[numMotors] = {12, 25, 26, 27};
 
 Servo escMotors[numMotors];
 
 constexpr int MIN_THROTTLE = 500; // these values are enforced by the esp32Servo library
 constexpr int MAX_THROTTLE = 2048; // 2500 is the max supported; 2048 makes conversion easier 
 int currentThrottle = MIN_THROTTLE;
+
+int packetCount = 0;
 
 using uint16 = unsigned short;
 
@@ -26,7 +28,7 @@ NetworkClient remote;
 void setup () {
   pinMode (LED_btMode, OUTPUT);
   pinMode (LED_connStatus, OUTPUT);
-  
+
   Serial.begin (9600);
 
   Serial.println (WiFi.softAP("InfoDrohne-WiFi", "sekuriti")); // security, but stonks
@@ -37,6 +39,10 @@ void setup () {
   udp.begin (8080);
 
   Serial.println ("Server started");
+  for (int i = 0; i < numMotors; ++i) {
+    pinMode(escPins[i], OUTPUT);
+    escMotors[i] = Servo();
+  }
   resetMotors ();
   Serial.println ("ready!");
 }
@@ -53,7 +59,7 @@ void loop () {
   else
     handleUdp();
   
-  delay(1);
+  delay(10);
 }
 
 void handleBtLE() {
@@ -63,17 +69,15 @@ void handleBtLE() {
 void handleUdp() {
   int packetSize = udp.parsePacket();
   if (packetSize) {
-    Serial.print("Received packet from: ");
-    Serial.print(udp.remoteIP());
-    Serial.print(":");
-    Serial.println(udp.remotePort());
+    Serial.printf("Received packet from %s: %d (%d)\n", udp.remoteIP().toString(), udp.remotePort(), packetCount++);
 
     char buffer[255];
     int len = udp.read(buffer, 255);
     uint16 *throttles = (uint16*)buffer;
     for (int i = 0; i < 4; ++i) {
-      Serial.printf("%d -> %d\n", i, throttles[i]);
-      escMotors[i].writeMicroseconds(throttles[i] / 32); // 16 bit in, clamp to 11 bits
+      auto v = max(MIN_THROTTLE, throttles[i] / 16);
+      Serial.printf("%d -> %d (%d)\n", i, throttles[i], v);
+      escMotors[i].writeMicroseconds(v); // 15 bit in, clamp to 11 bits
     }
   }
 }
@@ -94,7 +98,7 @@ void attachAllESCs(bool detach) {
   for (int i = 0; i < numMotors; i++) {
     Serial.print("Attaching motor on pin ");
     Serial.print(escPins[i]);
-    Serial.print("... ");
+    Serial.println("... ");
     
     // Try to attach the ESC
     escMotors[i].attach(escPins[i], MIN_THROTTLE, MAX_THROTTLE);
