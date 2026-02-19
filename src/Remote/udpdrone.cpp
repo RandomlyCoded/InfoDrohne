@@ -31,8 +31,7 @@ UdpDrone::UdpDrone(QObject *parent)
     });
 
     connect(m_udpTimer, &QTimer::timeout, this, &Drone::sendThrottle);
-    m_udpTimer->setInterval(10);
-    m_udpTimer->start();
+    m_udpTimer->setInterval(Drone::globalInterval());
 }
 
 bool UdpDrone::sendThrottle()

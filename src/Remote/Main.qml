@@ -13,7 +13,34 @@ Window {
     property var throttleStatus: [true, true, true, true]
 
     UdpDrone {
-        id: drone
+        id: udpDrone
+    }
+
+    BtLEDrone {
+        id: btleDrone
+    }
+
+    property var drone: udpDrone
+
+    CheckBox {
+        id: usebtle
+
+        text: "use BTLE"
+
+        checked: drone === btleDrone
+
+        onToggled: {
+            drone.stop()
+
+            if (drone === btleDrone)
+                drone = udpDrone
+            else
+                drone = btleDrone
+
+            drone.start()
+        }
+
+        Component.onCompleted: drone.start()
     }
 
     Row {

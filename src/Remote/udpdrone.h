@@ -15,6 +15,8 @@ public:
     // Drone interface
 public slots:
     bool sendThrottle();
+    void start() { m_udpTimer->start(); }
+    void stop()  { m_udpTimer->stop (); }
 
 private:
     const QHostAddress m_drone = QHostAddress("192.168.4.1"); // 127.0.4.0

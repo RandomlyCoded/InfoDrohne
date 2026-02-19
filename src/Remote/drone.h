@@ -16,13 +16,19 @@ class Drone : public QObject
 public:
     explicit Drone(QObject *parent = nullptr);
 
+    constexpr static int globalInterval() { return 500; }
     constexpr int propCount() const { return m_propCount; }
     QList<int> throttles() const { return m_throttles; }
+
+    // to-be-specified API:
+public slots:
+    virtual bool sendThrottle() = 0;
+    virtual void start() = 0;
+    virtual void stop() = 0;
 
 public slots:
     void setThrottle(const QList<int> throttles);
 
-    virtual bool sendThrottle() = 0;
     void setSingleThrottle(const int index, const int value);
 
     void forceClampThrottles();
