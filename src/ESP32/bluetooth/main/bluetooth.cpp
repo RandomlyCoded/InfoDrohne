@@ -28,7 +28,7 @@ static QueueHandle_t xControlQueue = NULL;
 
 // FLIGHT CONTROL ON CORE 1
 void flight_control_task(void *pvParameters) {
-	// one binary param is send, unpacking it into 12 signals with the following mappings
+    // one binary param is send, unpacking it into 12 signals with the following mappings
 	//
 	//
 	// MAPPING
@@ -58,23 +58,21 @@ void flight_control_task(void *pvParameters) {
         if (xQueueReceive(xControlQueue, &received_cmd, portMAX_DELAY)) {
 		count++;
             
-            // --- FUNKY CALCULATIONS HERE ---
-            // Example: Accessing your mappings
+        // --- FUNKY CALCULATIONS HERE ---
+        // Example: Accessing your mappings
 
 	    //for (int i = 0; i < 13; i++){
 		//ESP_LOGI(TAG, "signal %d: %d", i, received_cmd.signals[i]);
 		//}
 		int64_t now = esp_timer_get_time();
-            	if (now - last_log_time >= 1000000) {
-                	printf("Actual PPS Received on Core 1: %ld\n", count);
-                	count = 0;
-                	last_log_time = now;
-            	}
-	    
+            if (now - last_log_time >= 1000000) {
+               	printf("Actual PPS Received on Core 1: %ld\n", count);
+               	count = 0;
+               	last_log_time = now;
+            }
         }
     }
 }
-
 
 
 // This is the core callback for SPP events
@@ -93,7 +91,6 @@ static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param) {
 	    ESP_LOGI(TAG, "Client connected! Handle: %lu", param->srv_open.handle);
 	    esp_bt_gap_set_scan_mode(ESP_BT_NON_CONNECTABLE, ESP_BT_NON_DISCOVERABLE);
 	    break;
-
 	}
 
 	case ESP_SPP_CLOSE_EVT: {
@@ -125,9 +122,9 @@ static void esp_spp_cb(esp_spp_cb_event_t event, esp_spp_cb_param_t *param) {
 // Handles pairing and discovery events
 static void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
     if (event == ESP_BT_GAP_AUTH_CMPL_EVT) {
-	if (param->auth_cmpl.stat == ESP_BT_STATUS_SUCCESS) {
-	    ESP_LOGI(TAG, "Authentication success: %s", param->auth_cmpl.device_name);
-	}
+	    if (param->auth_cmpl.stat == ESP_BT_STATUS_SUCCESS) {
+	        ESP_LOGI(TAG, "Authentication success: %s", param->auth_cmpl.device_name);
+	    }
     }
 }
 
@@ -136,9 +133,10 @@ extern "C" void app_main(void) {
     // 1. Initialize NVS (Bluetooth needs it for pairing keys)
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-	ESP_ERROR_CHECK(nvs_flash_erase());
-	ret = nvs_flash_init();
+	    ESP_ERROR_CHECK(nvs_flash_erase());
+	    ret = nvs_flash_init();
     }
+
     ESP_ERROR_CHECK(ret);
 
     xControlQueue = xQueueCreate(1, sizeof(drone_cmd_t));
@@ -147,34 +145,53 @@ extern "C" void app_main(void) {
         return;
     }
 
-    xTaskCreatePinnedToCore(flight_control_task, "flight_task", 4096, NULL, 10, NULL, 1);
+    xTaskCreatePinnedToCore(
+        flight_control_task,
+        "flight_task",
+        4096,
+        NULL,
+        10,
+        NULL,
+        1
+    );
 
     // 2. Clear BLE memory (Classic BT only)
-    ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_BLE));
+    ESP_ERROR_CHECK(
+        esp_bt_controller_mem_release(ESP_BT_MODE_BLE)
+    );
 
     // 3. Setup BT Controller
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_bt_controller_init(&bt_cfg));
-    ESP_ERROR_CHECK(esp_bt_controller_enable(ESP_BT_MODE_CLASSIC_BT));
+    ESP_ERROR_CHECK(
+        esp_bt_controller_enable(ESP_BT_MODE_CLASSIC_BT)
+    );
 
     // 4. Setup Bluedroid Host Stack
     ESP_ERROR_CHECK(esp_bluedroid_init());
     ESP_ERROR_CHECK(esp_bluedroid_enable());
 
     // 5. Register callbacks and Init SPP
-    ESP_ERROR_CHECK(esp_bt_gap_register_callback(esp_bt_gap_cb));
-    ESP_ERROR_CHECK(esp_spp_register_callback(esp_spp_cb));
+    ESP_ERROR_CHECK(
+        esp_bt_gap_register_callback(esp_bt_gap_cb)
+    );
+    ESP_ERROR_CHECK(
+        esp_spp_register_callback(esp_spp_cb)
+    );
 
     esp_spp_cfg_t spp_cfg = {
-	.mode = ESP_SPP_MODE_CB, 
-	.enable_l2cap_ertm = true, 
-	.tx_buffer_size = 0 
+        .mode = ESP_SPP_MODE_CB, 
+        .enable_l2cap_ertm = true, 
+        .tx_buffer_size = 0 
     };
     ESP_ERROR_CHECK(esp_spp_enhanced_init(&spp_cfg));
 
     // 6. Make device visible to others
     esp_bt_gap_set_device_name(DEVICE_NAME);
-    esp_bt_gap_set_scan_mode(ESP_BT_CONNECTABLE, ESP_BT_GENERAL_DISCOVERABLE);
+    esp_bt_gap_set_scan_mode(
+            ESP_BT_CONNECTABLE,
+            ESP_BT_GENERAL_DISCOVERABLE
+    );
 
     ESP_LOGI(TAG, "Acceptor is up and running.");
 }
