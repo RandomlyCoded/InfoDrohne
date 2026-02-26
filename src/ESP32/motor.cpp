@@ -1,5 +1,11 @@
 #include "motor.h"
 
+#include <cstdint>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <driver/ledc.h>
+#include <esp_err.h>
+
 namespace
 {
 
@@ -19,7 +25,7 @@ Motor::Motor(int pin, int channel)
 
 void Motor::setDuty(int duty)
 {
-    ledc_set_duty(LEDC_MODE, (ledc_channel_t)m_channel, us_to_duty(us));
+    ledc_set_duty(LEDC_MODE, (ledc_channel_t)m_channel, duty);
     ledc_update_duty(LEDC_MODE, (ledc_channel_t)m_channel);
 
     m_duty = duty;

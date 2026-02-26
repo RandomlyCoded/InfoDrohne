@@ -11,6 +11,8 @@ class Motor
 {
 public:
   explicit Motor(int pin, int channel);
+  explicit Motor() {}
+
   /*
   channel unter umständen implizit machen? In main.cpp (ledPWM) sieht es so aus als ob es einfach nur ein Counter ist. Dann würde
   

@@ -45,7 +45,6 @@ void setup () {
   for (int i = 0; i < numMotors; ++i)
     escMotors[i] = Motor(pins[i], i);
   
-  resetMotors ();
   Serial.println ("ready!");
 }
 
@@ -71,66 +70,15 @@ void handleBtLE() {
 void handleUdp() {
   int packetSize = udp.parsePacket();
   if (packetSize) {
-    Serial.printf("Received packet from %s: %d (%d)\n", udp.remoteIP().toString(), udp.remotePort(), packetCount++);
+    // .c_str() to shut the compiler up (%s expects char*, not String)
+    Serial.printf("Received packet from %s: %d (%d)\n", udp.remoteIP().toString().c_str(), udp.remotePort(), packetCount++);
 
     char buffer[255];
     int len = udp.read(buffer, 255);
     uint16 *throttles = (uint16*)buffer;
     for (int i = 0; i < 4; ++i) {
-      Serial.printf("%d -> %d (%d)\n", i, throttles[i]);
+      Serial.printf("%d -> %d\n", i, throttles[i]);
       escMotors[i].setDuty(throttles[i]);
     }
   }
-}
-
-void attachAllESCs(bool detach) {
-  if (detach) {
-    for (int i = 0; i < numMotors; i++) {
-      Serial.print("detaching ");
-      Serial.print(i);
-      Serial.print("/");
-      Serial.println(escPins[i]);
-
-      escMotors[i].detach();
-      delay(50);
-    }
-  }
-
-  for (int i = 0; i < numMotors; i++) {
-    Serial.print("Attaching motor on pin ");
-    Serial.print(escPins[i]);
-    Serial.println("... ");
-    
-    // Try to attach the ESC
-    escMotors[i].attach(escPins[i], MIN_THROTTLE, MAX_THROTTLE);
-    
-    // Set to minimum throttle
-    escMotors[i].writeMicroseconds(MIN_THROTTLE);
-    delay(1000); // Short pause between attachments
-  }
-}
-
-void resetMotors() {
-  Serial.println("Resetting all motors...");
-  
-  attachAllESCs(false);
-  
-  // Re-arm ESCs
-  armESCs();
-}
-
-void armESCs() {
-  Serial.println("Arming ESCs...");
-  
-  // Ensure all are at minimum throttle
-  for (int i = 0; i < numMotors; i++) {
-    escMotors[i].writeMicroseconds(MIN_THROTTLE);
-  }
-  
-  // Wait for ESCs to recognize the signal
-  delay(3000);
-  
-  Serial.println("ESCs armed. Ready for input.");
-  Serial.print("Current throttle: ");
-  Serial.println(currentThrottle);
 }
