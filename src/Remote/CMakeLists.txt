@@ -10,16 +10,17 @@ find_package(Qt6 REQUIRED COMPONENTS Quick Bluetooth)
 qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appRemote
-    main.cpp
+    src/main.cpp
+    src/drone.h     src/drone.cpp
+    src/udpdrone.h  src/udpdrone.cpp
+    src/btledrone.h src/btledrone.cpp
+    src/btdrone.h   src/btdrone.cpp
 )
 
 qt_add_qml_module(appRemote
     URI Remote
     QML_FILES
-        Main.qml
-        SOURCES drone.h drone.cpp
-        SOURCES udpdrone.h udpdrone.cpp
-        SOURCES btledrone.h btledrone.cpp
+        qml/Main.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
