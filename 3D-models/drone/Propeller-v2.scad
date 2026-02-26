@@ -1,4 +1,5 @@
 module changeHole(d) {
+    scale(14/10)
     import("corejo/helice-toroidale/helice_18.stl");
 
     $fn = 64;
