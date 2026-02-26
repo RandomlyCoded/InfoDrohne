@@ -1,4 +1,4 @@
-#include "btdrone.h"
+#include "backend.h"
 #include "btledrone.h"
 #include "udpdrone.h"
 
@@ -17,9 +17,13 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 
-    qmlRegisterType<randomly::UdpDrone>("DroneControl", 1, 0, "UdpDrone");
-    qmlRegisterType<randomly::BtLEDrone>("DroneControl", 1, 0, "BtLEDrone");
-    qmlRegisterType<randomly::BtDrone>("DroneControl", 1, 0, "BtDrone");
+    auto udpDrone = new randomly::UdpDrone(&app);
+    auto btleDrone = new randomly::BtLEDrone(&app);
+    auto backend = new randomly::Backend(btleDrone, udpDrone, &app);
+
+    qmlRegisterSingletonInstance<randomly::UdpDrone>("DroneControl", 1, 0, "UdpDrone", udpDrone);
+    qmlRegisterSingletonInstance<randomly::BtLEDrone>("DroneControl", 1, 0, "BtLEDrone", btleDrone);
+    qmlRegisterSingletonInstance<randomly::Backend>("DroneControl", 1, 0, "Backend", backend);
 
     engine.loadFromModule("Remote", "Main");
 

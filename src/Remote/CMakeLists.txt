@@ -23,6 +23,7 @@ qt_add_qml_module(appRemote
         qml/Main.qml
         QML_FILES qml/DebugControls.qml
         QML_FILES qml/Joystick.qml
+        SOURCES src/backend.h src/backend.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

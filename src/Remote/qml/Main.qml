@@ -11,19 +11,8 @@ Window {
     title: "random Remote control"
 
     property var throttleStatus: [true, true, true, true]
-    property alias debugMode: debugToggle.checked
 
     property int margins: 48
-
-    UdpDrone {
-        id: udpDrone
-    }
-
-    BtLEDrone {
-        id: btleDrone
-    }
-
-    property var drone: udpDrone
 
     Button {
         visible: false
@@ -77,7 +66,7 @@ Window {
     }
 
     DebugControls {
-        visible: debugMode
+        visible: Backend.debugMode
     }
 
     RowLayout {
@@ -92,19 +81,8 @@ Window {
 
             text: "use BTLE"
 
-            checked: drone === btleDrone
-            onToggled: {
-                drone.stop()
-
-                if (drone === btleDrone)
-                    drone = udpDrone
-                else
-                    drone = btleDrone
-
-                drone.start()
-            }
-
-            Component.onCompleted: drone.start()
+            checked: Backend.useBtLE
+            onToggled: Backend.switchBtLE(checked)
         }
 
         Item { Layout.fillWidth: true; } // spacer
@@ -112,6 +90,8 @@ Window {
         CheckBox {
             id: debugToggle
             text: "debug mode"
+
+            onToggled: Backend.toggleDebug();
 
             Layout.alignment: Qt.ALignRight | Qt.AlignTop
             Layout.rightMargin: margins

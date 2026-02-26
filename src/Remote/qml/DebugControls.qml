@@ -60,7 +60,8 @@ Rectangle {
         }
 
         Repeater {
-            model: drone.throttles
+            model: Backend.drone.throttles
+
             Column {
                 spacing: 4
 
