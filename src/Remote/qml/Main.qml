@@ -93,6 +93,8 @@ Window {
 
             onToggled: Backend.toggleDebug();
 
+            visible: Backend.hasDebugMode();
+
             Layout.alignment: Qt.ALignRight | Qt.AlignTop
             Layout.rightMargin: margins
             Layout.topMargin: margins

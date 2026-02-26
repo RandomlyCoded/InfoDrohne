@@ -21,11 +21,20 @@ public:
 
     Drone *currentDrone() const;
     bool debugMode() const { return m_debugMode; }
-    bool useBtLE() const { return m_useBtLE; }
+    bool useBtLE() const { return hasDebugMode() && m_useBtLE; }
 
 public slots:
     void switchBtLE(bool useBtLE);
     void toggleDebug();
+
+    bool hasDebugMode() const {
+        return
+#if defined QT_DEBUG
+            true;
+#else
+            false;
+#endif // defined QT_DEBUG
+    }
 
 signals:
     void droneChanged();
