@@ -7,7 +7,7 @@ Rectangle {
     anchors.fill: parent
 
     color: "gray"
-    opacity: 0.8
+    opacity: 0.9
 
     MouseArea {
         // there is probably a better way to achieve this, but idrc rn

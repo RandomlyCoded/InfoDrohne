@@ -40,7 +40,7 @@ Window {
             from: -32768
             to: 32767
 
-            onMoved: {5
+            onMoved: {
                 lastValue = value
             }
 
