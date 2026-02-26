@@ -31,7 +31,7 @@ public:
 
 // to-be-specified API:
 public slots:
-    virtual bool sendThrottle() = 0;
+    virtual bool sendCommands() = 0;
     virtual void start() = 0;
     virtual void stop() = 0;
 
@@ -48,7 +48,7 @@ signals:
 
 // internal API for consistent data formats
 protected:
-    QByteArray prepareThrottlePayload(const QList<int> throttles);
+    QByteArray preparePayload(const QList<int> throttles);
 
 private:
     constexpr static int m_propCount = 4; // hardcode for now

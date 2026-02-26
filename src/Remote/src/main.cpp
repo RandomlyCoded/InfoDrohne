@@ -1,3 +1,4 @@
+#include "btdrone.h"
 #include "btledrone.h"
 #include "udpdrone.h"
 
@@ -18,6 +19,8 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<randomly::UdpDrone>("DroneControl", 1, 0, "UdpDrone");
     qmlRegisterType<randomly::BtLEDrone>("DroneControl", 1, 0, "BtLEDrone");
+    qmlRegisterType<randomly::BtDrone>("DroneControl", 1, 0, "BtDrone");
+
     engine.loadFromModule("Remote", "Main");
 
     return app.exec();

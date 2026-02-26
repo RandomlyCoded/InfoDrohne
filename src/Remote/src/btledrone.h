@@ -10,7 +10,8 @@ namespace randomly {
 
 namespace DroneUUID {
 
-const auto DataId = QBluetoothUuid{u"12345678-90ab-cdef-fedcba09876543210"};
+const auto ServiceId  = QBluetoothUuid{u"69fc8256-d3ca-9112-bce0-388de24860d3"};
+const auto ThrottleId = QBluetoothUuid{u"ebc49f11-9ffc-96b2-2a4e-6994a99175b5"};
 
 }
 
@@ -27,10 +28,11 @@ public:
         Ready,
         None
     };
+    Q_ENUM(State);
 
     // Drone interface
 public slots:
-    bool sendThrottle();
+    bool sendCommands();
     void start();
     void stop();
 

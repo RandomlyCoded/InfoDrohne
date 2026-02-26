@@ -39,7 +39,7 @@ void Drone::forceClampThrottles()
         t = clamp_u16(t);
 }
 
-QByteArray Drone::prepareThrottlePayload(const QList<int> throttles)
+QByteArray Drone::preparePayload(const QList<int> throttles)
 {
     QByteArray payload;
     QDataStream s{&payload, QIODevice::WriteOnly};
