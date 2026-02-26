@@ -13,6 +13,8 @@ Window {
     property var throttleStatus: [true, true, true, true]
     property alias debugMode: debugToggle.checked
 
+    property int margins: 48
+
     UdpDrone {
         id: udpDrone
     }
@@ -22,27 +24,6 @@ Window {
     }
 
     property var drone: udpDrone
-
-    CheckBox {
-        id: usebtle
-
-        text: "use BTLE"
-
-        checked: drone === btleDrone
-
-        onToggled: {
-            drone.stop()
-
-            if (drone === btleDrone)
-                drone = udpDrone
-            else
-                drone = btleDrone
-
-            drone.start()
-        }
-
-        Component.onCompleted: drone.start()
-    }
 
     Button {
         visible: false
@@ -55,7 +36,7 @@ Window {
         height: Math.max(heightCtrl.height, joystick.height)
 
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 24
+        anchors.bottomMargin: margins
 
         Slider {
             id: heightCtrl
@@ -63,7 +44,7 @@ Window {
             property real lastValue: 0
 
             Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-            Layout.leftMargin: 24
+            Layout.leftMargin: margins * 2
 
             orientation: Qt.Vertical
 
@@ -89,7 +70,7 @@ Window {
             id: joystick
 
             Layout.alignment: Qt.AlignRight | Qt.AlignBottom
-            Layout.rightMargin: 24
+            Layout.rightMargin: margins * 2
 
             diameter: 100
         }
@@ -99,9 +80,42 @@ Window {
         visible: debugMode
     }
 
-    CheckBox {
-        id: debugToggle
-        text: "debug mode"
-        anchors.right: parent.right
+    RowLayout {
+        width: parent.width
+
+        CheckBox {
+            id: usebtle
+
+            Layout.alignment: Qt.ALignLeft | Qt.AlignTop
+            Layout.leftMargin: margins
+            Layout.topMargin: margins
+
+            text: "use BTLE"
+
+            checked: drone === btleDrone
+            onToggled: {
+                drone.stop()
+
+                if (drone === btleDrone)
+                    drone = udpDrone
+                else
+                    drone = btleDrone
+
+                drone.start()
+            }
+
+            Component.onCompleted: drone.start()
+        }
+
+        Item { Layout.fillWidth: true; } // spacer
+
+        CheckBox {
+            id: debugToggle
+            text: "debug mode"
+
+            Layout.alignment: Qt.ALignRight | Qt.AlignTop
+            Layout.rightMargin: margins
+            Layout.topMargin: margins
+        }
     }
 }
