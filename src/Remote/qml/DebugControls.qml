@@ -81,7 +81,7 @@ Rectangle {
 
                     enabled: enabledToggle.checked
 
-                    onMoved: drone.setSingleThrottle(model.index, value)
+                    onMoved: Backend.drone.setSingleThrottle(model.index, value)
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -126,15 +126,15 @@ Rectangle {
                     var newThrottles = [0, 0, 0, 0]
                     let dt = value - lastValue;
 
-                    for (var i = 0; i < drone.propCount; ++i) {
+                    for (var i = 0; i < Backend.drone.propCount; ++i) {
                         if (throttleStatus[i])
-                            newThrottles[i] = drone.throttles[i] + dt
+                            newThrottles[i] = Backend.drone.throttles[i] + dt
 
                         else
-                            newThrottles[i] = drone.throttles[i]
+                            newThrottles[i] = Backend.drone.throttles[i]
                     }
 
-                    drone.throttles = newThrottles
+                    Backend.drone.throttles = newThrottles
 
                     lastValue = value
                 }
@@ -147,7 +147,7 @@ Rectangle {
                         // basically onRelease:
 
                         // we let the throttles go outside their normal (u16) range, so we need to reset them
-                        drone.forceClampThrottles()
+                        Backend.drone.forceClampThrottles()
 
                         lastValue = 0
                         value = 0

@@ -1,5 +1,7 @@
 import QtQuick
 
+import DroneControl
+
 Rectangle {
     property real diameter: 50
 
@@ -34,7 +36,7 @@ Rectangle {
             x = ax + parent.width/2  - width/2
             y = ay + parent.height/2 - height/2
 
-            drone.direction = Qt.vector3d(ax - parent.width/2, ay - parent.height/2, 0)
+            Backend.drone.direction = Qt.vector3d(ax - parent.width/2, ay - parent.height/2, 0)
         }
 
         radius: diameter/20
