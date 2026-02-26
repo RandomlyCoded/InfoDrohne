@@ -10,6 +10,8 @@ Window {
     visible: true
     title: "random Remote control"
 
+    flags: Backend.windowFlags()
+
     property var throttleStatus: [true, true, true, true]
 
     property int margins: 48

@@ -36,6 +36,14 @@ public slots:
 #endif // defined QT_DEBUG
     }
 
+    Qt::WindowFlags windowFlags() const {
+#if defined Q_OS_ANDROID
+        return Qt::FramelessWindowHint;
+#else
+        return Qt::Window;
+#endif // Q_OS_ANDROID
+    }
+
 signals:
     void droneChanged();
     void debugModeChanged();
