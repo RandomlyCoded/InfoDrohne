@@ -38,7 +38,7 @@ BtLEDrone::BtLEDrone(QObject *parent)
     m_sendTimer->setInterval(Drone::globalInterval());
 
     connect(this, &BtLEDrone::stateChanged, this, &BtLEDrone::onStateChanged);
-    connect(m_sendTimer, &QTimer::timeout, this, &BtLEDrone::sendThrottle);
+    connect(m_sendTimer, &QTimer::timeout, this, &BtLEDrone::sendCommands);
 }
 
 void BtLEDrone::onDeviceDiscovered(const QBluetoothDeviceInfo &deviceInfo)
@@ -72,16 +72,16 @@ void BtLEDrone::onDeviceConnected(QLowEnergyController *device)
 {
     qInfo() << "connected:" << deviceId(device);
     device->discoverServices();
-    m_state = Connected;
+    //m_state = Connected;
     emit stateChanged();
 }
 
 void BtLEDrone::onServicesDiscovered(QLowEnergyController *device)
 {
-    qInfo() << "services discovered:" << deviceId(device) << device->services();
+    qInfo() << "services discovered:" << deviceId(device) << device->services() << device->services().contains(DroneUUID::ServiceId);
 
-    if (device->services().contains(DroneUUID::DataId)) {
-        const auto service = device->createServiceObject(DroneUUID::DataId, this);
+    if (device->services().contains(DroneUUID::ServiceId)) {
+        const auto service = device->createServiceObject(DroneUUID::ServiceId, this);
         qInfo() << service->serviceUuid() << service->serviceName();
 
         connect(service, &QLowEnergyService::errorOccurred,
@@ -117,15 +117,16 @@ void BtLEDrone::onServiceStateChanged(QLowEnergyService *service, QLowEnergyServ
     qInfo() << "service state changed:" << state;
 
     if (state == QLowEnergyService::RemoteServiceDiscovered) {
-        auto tx = service->characteristic(DroneUUID::DataId);
-
+        auto tx = service->characteristic(DroneUUID::ThrottleId);
+        /*
         auto cccd = tx.clientCharacteristicConfiguration();
         if (!cccd.isValid()) {
+            qWarning() << "invalid cccd";
             // your error handling
             return;
         }
 
-        service->writeDescriptor(cccd, QLowEnergyCharacteristic::CCCDEnableNotification);
+        service->writeDescriptor(cccd, QLowEnergyCharacteristic::CCCDEnableNotification);*/
 
         if (!tx.isValid()) {
             qWarning() << "Could not find TX characteristic; aborting";
@@ -160,10 +161,10 @@ void BtLEDrone::onStateChanged()
     m_sendTimer->start();
 }
 
-bool BtLEDrone::sendThrottle()
+bool BtLEDrone::sendCommands()
 {
-    auto tx = m_service->characteristic(DroneUUID::DataId);
-    m_service->writeCharacteristic(tx, prepareThrottlePayload(throttles()), QLowEnergyService::WriteWithoutResponse);
+    auto tx = m_service->characteristic(DroneUUID::ThrottleId);
+    m_service->writeCharacteristic(tx, preparePayload(throttles()), QLowEnergyService::WriteWithoutResponse);
 
     return false;
 }

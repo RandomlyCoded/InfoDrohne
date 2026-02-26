@@ -30,13 +30,13 @@ UdpDrone::UdpDrone(QObject *parent)
         }
     });
 
-    connect(m_udpTimer, &QTimer::timeout, this, &Drone::sendThrottle);
+    connect(m_udpTimer, &QTimer::timeout, this, &Drone::sendCommands);
     m_udpTimer->setInterval(Drone::globalInterval());
 }
 
-bool UdpDrone::sendThrottle()
+bool UdpDrone::sendCommands()
 {
-    const auto payload = prepareThrottlePayload(throttles());
+    const auto payload = preparePayload(throttles());
 
     return m_sendSocket->writeDatagram(payload, m_drone, m_port) == propCount() * sizeof(quint16);
 }

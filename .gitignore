@@ -1,9 +1,10 @@
 **/build/
 **/CMakeFiles/
 **/CMakeCache.txt
+**/*cache*/
 
+*sdkconfig
 
-packForBunk
 *-Drohne.zip
 arduino
 arduino-ln

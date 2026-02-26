@@ -14,7 +14,7 @@ public:
 
     // Drone interface
 public slots:
-    bool sendThrottle();
+    bool sendCommands();
     void start() { m_udpTimer->start(); }
     void stop()  { m_udpTimer->stop (); }
 

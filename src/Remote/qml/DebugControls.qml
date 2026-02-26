@@ -1,46 +1,25 @@
 import QtQuick
-
 import QtQuick.Controls
 
 import DroneControl
 
-Window {
-    width: 640
-    height: 480
-    visible: true
-    title: "random Remote control"
+Rectangle {
+    anchors.fill: parent
 
-    property var throttleStatus: [true, true, true, true]
+    color: "gray"
+    opacity: 0.9
 
-    UdpDrone {
-        id: udpDrone
-    }
+    MouseArea {
+        // there is probably a better way to achieve this, but idrc rn
+        anchors.fill: parent
+        enabled: parent.visible
 
-    BtLEDrone {
-        id: btleDrone
-    }
-
-    property var drone: udpDrone
-
-    CheckBox {
-        id: usebtle
-
-        text: "use BTLE"
-
-        checked: drone === btleDrone
-
-        onToggled: {
-            drone.stop()
-
-            if (drone === btleDrone)
-                drone = udpDrone
-            else
-                drone = btleDrone
-
-            drone.start()
-        }
-
-        Component.onCompleted: drone.start()
+        onClicked:       (mouse) => { mouse.accepted = true; }
+        onDoubleClicked: (mouse) => { mouse.accepted = true; }
+        onPressAndHold:  (mouse) => { mouse.accepted = true; }
+        onPressed:       (mouse) => { mouse.accepted = true; }
+        onReleased:      (mouse) => { mouse.accepted = true; }
+        onWheel:         (wheel) => { wheel.accepted = true; }
     }
 
     Row {
@@ -81,7 +60,8 @@ Window {
         }
 
         Repeater {
-            model: drone.throttles
+            model: Backend.drone.throttles
+
             Column {
                 spacing: 4
 
@@ -101,7 +81,7 @@ Window {
 
                     enabled: enabledToggle.checked
 
-                    onMoved: drone.setSingleThrottle(model.index, value)
+                    onMoved: Backend.drone.setSingleThrottle(model.index, value)
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -146,15 +126,15 @@ Window {
                     var newThrottles = [0, 0, 0, 0]
                     let dt = value - lastValue;
 
-                    for (var i = 0; i < drone.propCount; ++i) {
+                    for (var i = 0; i < Backend.drone.propCount; ++i) {
                         if (throttleStatus[i])
-                            newThrottles[i] = drone.throttles[i] + dt
+                            newThrottles[i] = Backend.drone.throttles[i] + dt
 
                         else
-                            newThrottles[i] = drone.throttles[i]
+                            newThrottles[i] = Backend.drone.throttles[i]
                     }
 
-                    drone.throttles = newThrottles
+                    Backend.drone.throttles = newThrottles
 
                     lastValue = value
                 }
@@ -167,7 +147,7 @@ Window {
                         // basically onRelease:
 
                         // we let the throttles go outside their normal (u16) range, so we need to reset them
-                        drone.forceClampThrottles()
+                        Backend.drone.forceClampThrottles()
 
                         lastValue = 0
                         value = 0
