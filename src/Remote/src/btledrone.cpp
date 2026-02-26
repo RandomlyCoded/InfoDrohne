@@ -44,9 +44,9 @@ BtLEDrone::BtLEDrone(QObject *parent)
 void BtLEDrone::onDeviceDiscovered(const QBluetoothDeviceInfo &deviceInfo)
 {
     if (!shouldSkip(deviceInfo))
-        qInfo() << "device discovered:" << deviceInfo.name() << deviceId(deviceInfo);
+        qInfo() << "device discovered:" << deviceInfo.name() << deviceId(deviceInfo) << deviceInfo.name().toLower().contains(u"drone");
 
-    if (!deviceInfo.name().contains(u"InfoDrone"))
+    if (!deviceInfo.name().toLower().contains(u"drone"))
         return;
 
     m_deviceDiscovery->stop();
