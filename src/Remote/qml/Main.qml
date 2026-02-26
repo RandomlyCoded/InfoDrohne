@@ -1,6 +1,6 @@
 import QtQuick
-
 import QtQuick.Controls
+import QtQuick.Layouts
 
 import DroneControl
 
@@ -11,6 +11,7 @@ Window {
     title: "random Remote control"
 
     property var throttleStatus: [true, true, true, true]
+    property alias debugMode: debugToggle.checked
 
     UdpDrone {
         id: udpDrone
@@ -43,136 +44,64 @@ Window {
         Component.onCompleted: drone.start()
     }
 
-    Row {
-        spacing: 20
-        anchors.centerIn: parent
-        CheckBox {
-            text: "auto stabilize"
-            checked: true
-        }
+    Button {
+        visible: false
+        onClicked: Qt.createQmlObject("import DroneControl; BtDrone {}", parent, "mfucklthis")
+    }
 
-        Column {
-            spacing: 8
-            Button {
-                text: "up"
-                onPressed: console.log("start flying up (increase all throttles?)")
-                onReleased: console.log("stop flying up (reset all throttles again)")
+    RowLayout {
+        width: parent.width
+
+        height: Math.max(heightCtrl.height, joystick.height)
+
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 24
+
+        Slider {
+            id: heightCtrl
+
+            property real lastValue: 0
+
+            Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+            Layout.leftMargin: 24
+
+            orientation: Qt.Vertical
+
+            from: -32768
+            to: 32767
+
+            onMoved: {5
+                lastValue = value
             }
 
-            Button {
-                text: "down"
-                onPressed: console.log("start flying down (decrease all throttles?)")
-                onReleased: console.log("stop flying down (reset all throttles again)")
-            }
+            onPressedChanged: {
+                    // started pressing
+                    if (pressed)
+                        return
 
-            Button {
-                text: "rotate clockwise"
-
-                onPressed: console.log("start rotating")
-                onReleased: console.log("stop rotating")
-            }
-
-            Button {
-                text: "forwards"
-
-                onPressed: console.log("start flying forwards (increase back throttle slightly?)")
-                onReleased: console.log("stop flying forwars (reset all throttles again)")
-            }
-        }
-
-        Repeater {
-            model: drone.throttles
-            Column {
-                spacing: 4
-
-                Text {
-                    width: slider.width
-                    text: Math.round(slider.value/32767 * 100) + "%"
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-
-                Slider {
-                    id: slider
-                    orientation: Qt.Vertical
-
-                    value: modelData
-                    from: 0
-                    to: 32767
-
-                    enabled: enabledToggle.checked
-
-                    onMoved: drone.setSingleThrottle(model.index, value)
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-
-                Text {
-                    id: indexInfo
-
-                    text: model.index
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-
-                CheckBox {
-                    id: enabledToggle
-                    checked: throttleStatus[model.index]
-
-                    onToggled: throttleStatus[model.index] = checked
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
+                    // basically onRelease:
+                    lastValue = 0
+                    value = 0
             }
         }
 
-        Column {
-            spacing: 4
+        Joystick {
+            id: joystick
 
-            Text {
-                width: sliderModifier.width
+            Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+            Layout.rightMargin: 24
 
-                text: Math.round(sliderModifier.value/32767 * 100) + "%"
-
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-
-            Slider {
-                id: sliderModifier
-                property real lastValue: 0
-
-                orientation: Qt.Vertical
-
-                from: -32768
-                to: 32767
-
-                onMoved: {
-                    var newThrottles = [0, 0, 0, 0]
-                    let dt = value - lastValue;
-
-                    for (var i = 0; i < drone.propCount; ++i) {
-                        if (throttleStatus[i])
-                            newThrottles[i] = drone.throttles[i] + dt
-
-                        else
-                            newThrottles[i] = drone.throttles[i]
-                    }
-
-                    drone.throttles = newThrottles
-
-                    lastValue = value
-                }
-
-                onPressedChanged: {
-                        // started pressing
-                        if (pressed)
-                            return
-
-                        // basically onRelease:
-
-                        // we let the throttles go outside their normal (u16) range, so we need to reset them
-                        drone.forceClampThrottles()
-
-                        lastValue = 0
-                        value = 0
-                }
-            }
+            diameter: 100
         }
+    }
+
+    DebugControls {
+        visible: debugMode
+    }
+
+    CheckBox {
+        id: debugToggle
+        text: "debug mode"
+        anchors.right: parent.right
     }
 }
