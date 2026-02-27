@@ -1,17 +1,21 @@
+$fn = 64;
+
 module changeHole(d) {
-    scale(14/10)
-    import("corejo/helice-toroidale/helice_18.stl");
-
-    $fn = 64;
-
     difference() {
-        cylinder (d = 6, h = 10);
+        scale(10/14)
+        import("corejo/helice-toroidale/helice_18.stl");
 
         cylinder (d = d, h = 10);
     }
 }
 
-changeHole(4);
+for (i = [0 : 10]) {
+    _d = 4 + 0.05 * i;
 
-translate([0, 50, 0])
-changeHole(3.9);
+    translate([0, i * 50, 0])
+    changeHole();
+    
+    translate([60, i * 50, 0])
+    linear_extrude(1)
+    text(str(_d));
+}
