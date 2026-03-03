@@ -6,6 +6,8 @@
 #include <driver/ledc.h>
 #include <esp_err.h>
 
+#include <Arduino.h>
+
 namespace
 {
 
@@ -25,10 +27,18 @@ Motor::Motor(int pin, int channel)
 
 void Motor::setDuty(int duty)
 {
+    Serial.printf("setting duty %d p/c(%d, %d)\n", duty, m_gpio, m_channel);
+
+    ledc_set_duty_and_update(LEDC_MODE, (ledc_channel_t) m_channel, duty, MAX_DUTY);
+    /*
     ledc_set_duty(LEDC_MODE, (ledc_channel_t)m_channel, duty);
-    ledc_update_duty(LEDC_MODE, (ledc_channel_t)m_channel);
+
+    Serial.printf("updading duty\n");
+    ledc_update_duty(LEDC_MODE, (ledc_channel_t)m_channel);*/
 
     m_duty = duty;
+
+    Serial.println("exit");
 }
 
 void Motor::init()

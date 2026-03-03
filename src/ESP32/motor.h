@@ -7,6 +7,8 @@
 #define LEDC_RES        LEDC_TIMER_16_BIT
 #define MAX_DUTY        65535
 
+
+
 class Motor
 {
 public:

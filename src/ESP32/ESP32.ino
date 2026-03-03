@@ -29,7 +29,7 @@ void setup () {
   pinMode (LED_btMode, OUTPUT);
   pinMode (LED_connStatus, OUTPUT);
 
-  Serial.begin (9600);
+  Serial.begin (115200);
 
   Serial.println (WiFi.softAP("InfoDrohne-WiFi", "sekuriti")); // security, but stonks
   
@@ -70,6 +70,7 @@ void handleBtLE() {
 void handleUdp() {
   int packetSize = udp.parsePacket();
   if (packetSize) {
+    Serial.printf("new packet: %d\n", packetSize);
     // .c_str() to shut the compiler up (%s expects char*, not String)
     Serial.printf("Received packet from %s: %d (%d)\n", udp.remoteIP().toString().c_str(), udp.remotePort(), packetCount++);
 

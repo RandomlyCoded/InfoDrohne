@@ -48,7 +48,7 @@ signals:
 
 // internal API for consistent data formats
 protected:
-    QByteArray preparePayload(const QList<int> throttles);
+    QByteArray preparePayload();
 
 private:
     constexpr static int m_propCount = 4; // hardcode for now

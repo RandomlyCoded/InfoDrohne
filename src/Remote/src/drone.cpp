@@ -1,5 +1,7 @@
 #include "drone.h"
 
+#include "backend.h"
+
 #include <QLoggingCategory>
 #include <QNetworkReply>
 
@@ -10,7 +12,7 @@ namespace {
 Q_LOGGING_CATEGORY(lcDrone, "randomly.Drone");
 
 const quint16 clamp_u16(const int v) {
-    return qMin(qMax(0, v), INT16_MAX);
+    return qMin(qMax(0, v), UINT16_MAX);
 }
 
 } // namespace
@@ -39,17 +41,26 @@ void Drone::forceClampThrottles()
         t = clamp_u16(t);
 }
 
-QByteArray Drone::preparePayload(const QList<int> throttles)
+QByteArray Drone::preparePayload()
 {
     QByteArray payload;
     QDataStream s{&payload, QIODevice::WriteOnly};
-
-    payload.reserve(m_propCount * sizeof(quint16));
     s.setByteOrder(QDataStream::LittleEndian);
 
-    // writing the list directly would add separators etc.
-    for (const auto t: throttles)
-        s << clamp_u16(t);
+    s << (Backend::instance()->debugMode() << 7); // d000 0000
+
+    if (Backend::instance()->debugMode()) {
+        // writing the list directly would add separators etc.
+        for (const auto t: m_throttles)
+            s << clamp_u16(t);
+    }
+    else {
+        for (int i = 0; i < 3; ++i)
+            s <<  clamp_u16(m_direction[i]);
+
+        for (int i = 0; i < 3; ++i)
+            s <<  clamp_u16(m_rotation[i]);
+    }
 
     return payload;
 }

@@ -23,6 +23,8 @@ public:
     bool debugMode() const { return m_debugMode; }
     bool useBtLE() const { return hasDebugMode() && m_useBtLE; }
 
+    static Backend *instance();
+
 public slots:
     void switchBtLE(bool useBtLE);
     void toggleDebug();
