@@ -11,7 +11,7 @@
 #define MAX_DUTY        65535
 
 // Motor pins
-#define M1_GPIO 32
+#define M1_GPIO 18
 #define M2_GPIO 27
 #define M3_GPIO 25
 #define M4_GPIO 26
@@ -76,8 +76,6 @@ extern "C" void app_main(void)
 
     vTaskDelay(pdMS_TO_TICKS(4000));
 
-    // Stop all
-    for(int i = 0; i < 4; i++)
-        set_motor(i, 1000);
+
 }
 
