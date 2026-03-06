@@ -7,7 +7,7 @@
 
 namespace randomly {
 
-class BtDrone : public randomly::Drone
+class BtDrone : public Drone
 {
     Q_OBJECT
 

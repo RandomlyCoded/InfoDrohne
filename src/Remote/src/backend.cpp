@@ -9,9 +9,10 @@ static Backend *__instance = nullptr;
 
 } // namespace
 
-Backend::Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, QObject *parent)
+Backend::Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, BtDrone *btDrone, QObject *parent)
     : QObject(parent)
     , m_btleDrone(btleDrone)
+    , m_btDrone(btDrone)
     , m_udpDrone(udpDrone)
 {
     Q_ASSERT_X(Backend::instance() == nullptr, Q_FUNC_INFO, "Backend already initialized!");
@@ -23,8 +24,10 @@ Backend::Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, QObject *parent)
 
 Drone *Backend::currentDrone() const
 {
+    qInfo() << (m_useBtLE ? (Drone*)m_btDrone: m_udpDrone);
+
     if (m_useBtLE)
-        return m_btleDrone;
+        return m_btDrone;
 
     return m_udpDrone;
 }

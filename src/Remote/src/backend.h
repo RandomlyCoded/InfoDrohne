@@ -1,6 +1,7 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
+#include "btdrone.h"
 #include "btledrone.h"
 #include "udpdrone.h"
 
@@ -17,7 +18,7 @@ class Backend : public QObject
     Q_PROPERTY(bool useBtLE READ useBtLE NOTIFY useBtLEChanged FINAL)
 
 public:
-    explicit Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, QObject *parent = nullptr);
+    explicit Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, BtDrone *btDrone, QObject *parent = nullptr);
 
     Drone *currentDrone() const;
     bool debugMode() const { return m_debugMode; }
@@ -54,6 +55,7 @@ signals:
 private:
     BtLEDrone *m_btleDrone = nullptr;
     UdpDrone *m_udpDrone = nullptr;
+    BtDrone *m_btDrone = nullptr;
 
     bool m_debugMode = false;
     bool m_useBtLE = true;

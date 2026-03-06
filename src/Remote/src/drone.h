@@ -19,7 +19,7 @@ class Drone : public QObject
 public:
     explicit Drone(QObject *parent = nullptr);
 
-    constexpr static int globalInterval() { return 500; }
+    constexpr static int globalInterval() { return 10; }
     constexpr int propCount() const { return m_propCount; }
     QList<int> throttles() const { return m_throttles; }
 

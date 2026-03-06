@@ -47,7 +47,23 @@ QByteArray Drone::preparePayload()
     QDataStream s{&payload, QIODevice::WriteOnly};
     s.setByteOrder(QDataStream::LittleEndian);
 
-    s << (Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+
+    return payload;
 
     if (Backend::instance()->debugMode()) {
         // writing the list directly would add separators etc.
