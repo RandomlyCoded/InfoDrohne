@@ -26,6 +26,14 @@ qt_add_qml_module(appRemote
         SOURCES src/backend.h src/backend.cpp
 )
 
+add_custom_target (Documentation
+    SOURCES
+    wiki/Home.md
+    wiki/Planung.md
+    wiki/Umsetzung.md
+    wiki/Quellen.md
+)
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
