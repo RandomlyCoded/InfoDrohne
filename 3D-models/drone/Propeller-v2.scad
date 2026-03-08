@@ -1,21 +1,39 @@
-$fn = 64;
+sizeTest = true;
 
-module changeHole(d) {
+module hexagon(r) {
+    translate([0, 0, -5])
+    linear_extrude(10)
+    polygon([for (i = [0 : 6]) r * [cos(i * 60), sin(i * 60)]]);
+}
+
+r = 7.9 / (2 * cos(30));
+
+if (sizeTest) {
+    difference () {
+        cube([50, 50, 5], true);
+        
+        translate([-15, -15, 0])
+        hexagon(r);
+
+        translate([-15,  15, 0])
+        hexagon(r + 0.1);
+
+        translate([ 15,  15, 0])
+        hexagon(r + 0.2);
+
+        translate([ 15, -15, 0])
+        hexagon(r - 0.1);
+        
+        translate([20, -25, 1.5])
+        linear_extrude(2)
+        text("-");
+    }
+} else {
     difference() {
         scale(10/14)
         import("corejo/helice-toroidale/helice_18.stl");
-
-        cylinder (d = d, h = 10);
+        
+        // Das Loch muss nicht ganz durchgehen; daher sollten 5mm ausreichen
+        #hexagon(r);
     }
-}
-
-for (i = [0 : 10]) {
-    _d = 4 + 0.05 * i;
-
-    translate([0, i * 50, 0])
-    changeHole();
-    
-    translate([60, i * 50, 0])
-    linear_extrude(1)
-    text(str(_d));
 }
