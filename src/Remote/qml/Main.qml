@@ -74,17 +74,31 @@ Window {
     RowLayout {
         width: parent.width
 
-        CheckBox {
-            id: usebtle
-
+        ColumnLayout {
             Layout.alignment: Qt.ALignLeft | Qt.AlignTop
             Layout.leftMargin: margins
             Layout.topMargin: margins
 
-            text: "use BTLE"
+            CheckBox {
+                text: "BtLE"
 
-            checked: Backend.useBtLE
-            onToggled: Backend.switchBtLE(checked)
+                checked: Backend.protocol === Backend.BtLE
+                onToggled: Backend.protocol = Backend.BtLE
+            }
+
+            CheckBox {
+                text: "Bt"
+
+                checked: Backend.protocol === Backend.Bt
+                onToggled: Backend.protocol = Backend.Bt
+            }
+
+            CheckBox {
+                text: "UDP"
+
+                checked: Backend.protocol === Backend.Udp
+                onToggled: Backend.protocol = Backend.Udp
+            }
         }
 
         Item { Layout.fillWidth: true; } // spacer

@@ -24,12 +24,16 @@ Backend::Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, BtDrone *btDrone, QOb
 
 Drone *Backend::currentDrone() const
 {
-    qInfo() << (m_useBtLE ? (Drone*)m_btDrone: m_udpDrone);
-
-    if (m_useBtLE)
+    switch (m_protocol) {
+    case BtLE:
+        return m_btleDrone;
+    case Bt:
         return m_btDrone;
+    case Udp:
+        return m_udpDrone;
+    }
 
-    return m_udpDrone;
+    Q_ASSERT_X(false, Q_FUNC_INFO, "Undefined protocol");
 }
 
 Backend *Backend::instance()
@@ -37,20 +41,18 @@ Backend *Backend::instance()
     return __instance;
 }
 
-void Backend::switchBtLE(bool useBtLE)
-{
-    currentDrone()->stop();
-    m_useBtLE = useBtLE;
-    currentDrone()->start();
-
-    emit droneChanged();
-    emit useBtLEChanged();
-}
-
 void Backend::toggleDebug()
 {
     m_debugMode ^= true;
     emit debugModeChanged();
+}
+
+void Backend::setProtocol(const Protocol &newProtocol)
+{
+    if (m_protocol == newProtocol)
+        return;
+    m_protocol = newProtocol;
+    emit protocolChanged();
 }
 
 } // namespace randomly

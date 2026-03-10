@@ -15,19 +15,29 @@ class Backend : public QObject
 
     Q_PROPERTY(randomly::Drone *drone READ currentDrone NOTIFY droneChanged FINAL)
     Q_PROPERTY(bool debugMode READ debugMode NOTIFY debugModeChanged FINAL)
-    Q_PROPERTY(bool useBtLE READ useBtLE NOTIFY useBtLEChanged FINAL)
+
+    Q_PROPERTY(Protocol protocol READ protocol WRITE setProtocol NOTIFY protocolChanged FINAL)
 
 public:
+    enum Protocol {
+        BtLE,
+        Bt,
+        Udp
+    };
+
+    Q_ENUM(Protocol);
+
     explicit Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, BtDrone *btDrone, QObject *parent = nullptr);
 
     Drone *currentDrone() const;
     bool debugMode() const { return m_debugMode; }
-    bool useBtLE() const { return hasDebugMode() && m_useBtLE; }
 
     static Backend *instance();
 
+    Protocol protocol() const { return m_protocol; }
+    void setProtocol(const Protocol &newProtocol);
+
 public slots:
-    void switchBtLE(bool useBtLE);
     void toggleDebug();
 
     bool hasDebugMode() const {
@@ -52,13 +62,15 @@ signals:
     void debugModeChanged();
     void useBtLEChanged();
 
+    void protocolChanged();
+
 private:
     BtLEDrone *m_btleDrone = nullptr;
     UdpDrone *m_udpDrone = nullptr;
     BtDrone *m_btDrone = nullptr;
 
     bool m_debugMode = false;
-    bool m_useBtLE = true;
+    Protocol m_protocol = Bt;
 };
 
 } // namespace randomly
