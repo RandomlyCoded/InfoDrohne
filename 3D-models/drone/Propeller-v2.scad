@@ -34,10 +34,6 @@ if (sizeTest) {
         import("corejo/helice-toroidale/helice_18.stl");
         
         // Das Loch muss nicht ganz durchgehen; daher sollten 5mm ausreichen
-<<<<<<< HEAD
-        #hexagon(r);
-=======
         hexagon(r + 0.2);
->>>>>>> raw-motor-control
     }
 }
