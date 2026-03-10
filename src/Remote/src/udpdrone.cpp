@@ -36,7 +36,7 @@ UdpDrone::UdpDrone(QObject *parent)
 
 bool UdpDrone::sendCommands()
 {
-    const auto payload = preparePayload(throttles());
+    const auto payload = preparePayload();
 
     return m_sendSocket->writeDatagram(payload, m_drone, m_port) == propCount() * sizeof(quint16);
 }

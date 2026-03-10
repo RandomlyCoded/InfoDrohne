@@ -164,7 +164,7 @@ void BtLEDrone::onStateChanged()
 bool BtLEDrone::sendCommands()
 {
     auto tx = m_service->characteristic(DroneUUID::ThrottleId);
-    m_service->writeCharacteristic(tx, preparePayload(throttles()), QLowEnergyService::WriteWithoutResponse);
+    m_service->writeCharacteristic(tx, preparePayload(), QLowEnergyService::WriteWithoutResponse);
 
     return false;
 }

@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
 
     auto udpDrone = new randomly::UdpDrone(&app);
     auto btleDrone = new randomly::BtLEDrone(&app);
-    auto backend = new randomly::Backend(btleDrone, udpDrone, &app);
+    auto btDrone = new randomly::BtDrone(&app);
+    auto backend = new randomly::Backend(btleDrone, udpDrone, btDrone, &app);
 
     qmlRegisterSingletonInstance<randomly::UdpDrone>("DroneControl", 1, 0, "UdpDrone", udpDrone);
     qmlRegisterSingletonInstance<randomly::BtLEDrone>("DroneControl", 1, 0, "BtLEDrone", btleDrone);

@@ -2,36 +2,57 @@
 
 namespace randomly {
 
-Backend::Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, QObject *parent)
+namespace
+{
+
+static Backend *__instance = nullptr;
+
+} // namespace
+
+Backend::Backend(BtLEDrone *btleDrone, UdpDrone *udpDrone, BtDrone *btDrone, QObject *parent)
     : QObject(parent)
     , m_btleDrone(btleDrone)
+    , m_btDrone(btDrone)
     , m_udpDrone(udpDrone)
 {
+    Q_ASSERT_X(Backend::instance() == nullptr, Q_FUNC_INFO, "Backend already initialized!");
+
+    __instance = this;
+
     currentDrone()->start();
 }
 
 Drone *Backend::currentDrone() const
 {
-    if (m_useBtLE)
+    switch (m_protocol) {
+    case BtLE:
         return m_btleDrone;
+    case Bt:
+        return m_btDrone;
+    case Udp:
+        return m_udpDrone;
+    }
 
-    return m_udpDrone;
+    Q_ASSERT_X(false, Q_FUNC_INFO, "Undefined protocol");
 }
 
-void Backend::switchBtLE(bool useBtLE)
+Backend *Backend::instance()
 {
-    currentDrone()->stop();
-    m_useBtLE = useBtLE;
-    currentDrone()->start();
-
-    emit droneChanged();
-    emit useBtLEChanged();
+    return __instance;
 }
 
 void Backend::toggleDebug()
 {
     m_debugMode ^= true;
     emit debugModeChanged();
+}
+
+void Backend::setProtocol(const Protocol &newProtocol)
+{
+    if (m_protocol == newProtocol)
+        return;
+    m_protocol = newProtocol;
+    emit protocolChanged();
 }
 
 } // namespace randomly

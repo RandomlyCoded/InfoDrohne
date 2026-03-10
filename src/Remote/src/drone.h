@@ -19,7 +19,7 @@ class Drone : public QObject
 public:
     explicit Drone(QObject *parent = nullptr);
 
-    constexpr static int globalInterval() { return 500; }
+    constexpr static int globalInterval() { return 10; }
     constexpr int propCount() const { return m_propCount; }
     QList<int> throttles() const { return m_throttles; }
 
@@ -48,7 +48,7 @@ signals:
 
 // internal API for consistent data formats
 protected:
-    QByteArray preparePayload(const QList<int> throttles);
+    QByteArray preparePayload();
 
 private:
     constexpr static int m_propCount = 4; // hardcode for now
