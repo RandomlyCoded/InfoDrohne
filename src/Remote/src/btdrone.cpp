@@ -35,13 +35,13 @@ BtDrone::BtDrone(QObject *parent)
     addr.rc_bdaddr = {0xAA, 0xA7, 0xB0, 0x07, 0x70, 0x00}; // 0x00, 0x70, 0x07, 0xB0, 0xA7, 0xAA
 
     if (::connect(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        qFatal("Connect failed");
+        qWarning("Connect failed");
     }
 
     m_socket = new QFile{};
     if (!m_socket->open(s, QFile::WriteOnly)) {
         qWarning() << m_socket->errorString();
-        qFatal("failed!");
+        qWarning("failed!");
     }
 
     m_sendTimer->setInterval(globalInterval());
