@@ -11,10 +11,10 @@
 #define MAX_DUTY        65535
 
 // Motor pins
-#define M1_GPIO 18
-#define M2_GPIO 27
-#define M3_GPIO 25
-#define M4_GPIO 26
+#define M1_GPIO 25
+#define M2_GPIO 26
+#define M3_GPIO 27
+#define M4_GPIO 32
 
 uint32_t us_to_duty(uint32_t us)
 {
