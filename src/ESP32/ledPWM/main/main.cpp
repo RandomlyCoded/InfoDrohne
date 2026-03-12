@@ -63,11 +63,13 @@ extern "C" void app_main(void)
     for(int i = 0; i < 4; i++)
     {
         set_motor(i, 1300);
+        printf("testing %d\n", i);
         vTaskDelay(pdMS_TO_TICKS(2000));
         set_motor(i, 1000);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 
+    printf("group test!\n");
     // -------- Group test --------
     set_motor(0, 1400);
     set_motor(1, 1400);
