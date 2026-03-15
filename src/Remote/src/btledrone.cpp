@@ -66,6 +66,7 @@ void BtLEDrone::onDeviceDiscovered(const QBluetoothDeviceInfo &deviceInfo)
     connect(device, &QLowEnergyController::disconnected,
             this, &BtLEDrone::startDiscovery);
 
+    qInfo() << "connecting...";
     device->connectToDevice();
 }
 
