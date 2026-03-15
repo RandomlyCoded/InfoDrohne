@@ -1,6 +1,8 @@
-#include <WiFi.h>
-
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
 #include <ESP32Servo.h>
+#include <WiFi.h>
 
 constexpr int numMotors = 4;
 ESP32PWM escMotors[numMotors];
@@ -9,15 +11,16 @@ int packetCount                       = 0;
 constexpr int    freq                 = 1000;
 constexpr double DEBUG_THROTTLE_SCALE = 1. / 256;
 
-using uint16 = unsigned short;
-
-constexpr int LED_btMode = 2;
+constexpr int LED_btMode     = 2;
 constexpr int LED_connStatus = 5;
-constexpr int PIN_button = 33;
+constexpr int PIN_button     = 33;
+
+constexpr auto serviceUUID        = "69fc8256-d3ca-9112-bce0-388de24860d3";
+constexpr auto characteristicUUID = "ebc49f11-9ffc-96b2-2a4e-6994a99175b5";
 
 constexpr bool doPrint = false;
 
-bool btMode = false;
+bool btMode = true;
 bool lastButtonState = false;
 
 NetworkUDP udp;
@@ -42,6 +45,21 @@ void handlePacket(const char *buffer, int len)
   }
 }
 
+class BLECallbacks : public BLECharacteristicCallbacks
+{
+  void onWrite(BLECharacteristic *pCharacteristic) {
+    if (doPrint)
+      Serial.println("new BtLE packet!");
+
+    String value = pCharacteristic->getValue();
+
+    if (!btMode)
+      return;
+
+    handlePacket(value.c_str(), value.length());
+  }
+};
+
 bool expectedLength(char flags)
 {
   if (flags & 128) // debug
@@ -62,11 +80,20 @@ void setup () {
   Serial.println (myIP);
   udp.begin (8080);
 
-  Serial.println ("Server started");
+  Serial.println ("Server started. Starting BLE...");
 
-  constexpr int pins[numMotors] = {32, 27, 25, 26};
+  BLEDevice::init("InfoDrone-BLE");
+  auto bleServer = BLEDevice::createServer();
 
-  Serial.println("attaching ESPs...");
+  auto bleService = bleServer->createService(serviceUUID);
+  auto throttleCharacteristic = bleService->createCharacteristic(characteristicUUID, BLECharacteristic::PROPERTY_WRITE);
+
+  throttleCharacteristic->setCallbacks(new BLECallbacks());
+
+  bleService->start();
+  bleServer->getAdvertising()->start();
+
+  Serial.println("attaching Motors...");
   constexpr int pins[numMotors] = {12, 13, 15, 14};
   for (int i = 0; i < numMotors; ++i) {
 	  ESP32PWM::allocateTimer(i);
@@ -85,16 +112,10 @@ void loop () {
   }
 
   lastButtonState = buttonPressed;
-  if (btMode)
-    handleBtLE();
-  else
+  if (!btMode) // btle is handled via callbacks
     handleUdp();
   
-  delay(10);  
-}
-
-void handleBtLE() {
-
+  delay(1);  
 }
 
 void handleUdp() {
