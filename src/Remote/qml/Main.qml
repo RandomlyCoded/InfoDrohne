@@ -81,21 +81,21 @@ Window {
             Layout.leftMargin: margins
             Layout.topMargin: margins
 
-            CheckBox {
+            RadioButton {
                 text: "BtLE"
 
                 checked: Backend.protocol === Backend.BtLE
                 onToggled: Backend.protocol = Backend.BtLE
             }
 
-            CheckBox {
+            RadioButton {
                 text: "Bt"
 
                 checked: Backend.protocol === Backend.Bt
                 onToggled: Backend.protocol = Backend.Bt
             }
 
-            CheckBox {
+            RadioButton {
                 text: "UDP"
 
                 checked: Backend.protocol === Backend.Udp
@@ -105,7 +105,7 @@ Window {
 
         Item { Layout.fillWidth: true; } // spacer
 
-        CheckBox {
+        Switch {
             id: debugToggle
             text: "debug mode"
 
