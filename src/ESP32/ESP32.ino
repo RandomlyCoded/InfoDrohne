@@ -55,8 +55,7 @@ void setup () {
   pinMode (LED_connStatus, OUTPUT);
 
   Serial.begin (115200);
-
-  Serial.println (WiFi.softAP("InfoDrohne-WiFi", "sekuriti")); // security, but stonks
+  Serial.println (WiFi.softAP("InfoDrone-WiFi", "sekuriti")); // security, but stonks
   
   IPAddress myIP = WiFi.softAPIP ();
   Serial.print ("AP IP address: ");
