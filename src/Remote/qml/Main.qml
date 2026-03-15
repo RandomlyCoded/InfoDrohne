@@ -47,13 +47,15 @@ Window {
             }
 
             onPressedChanged: {
-                    // started pressing
-                    if (pressed)
-                        return
+                // started pressing
+                if (pressed)
+                    return
 
-                    // basically onRelease:
-                    lastValue = 0
-                    value = 0
+                // basically onRelease:
+                lastValue = 0
+                value = 0
+
+                Backend.drone.forceClampThrottles();
             }
         }
 
