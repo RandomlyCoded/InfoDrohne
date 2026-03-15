@@ -1,10 +1,10 @@
-#include "motor.h"
-
 #include <WiFi.h>
+
+#include <ESP32Servo.h>
 
 constexpr int numMotors = 4;
 
-Motor escMotors[numMotors];
+Servo escMotors[numMotors];
 
 constexpr int MIN_THROTTLE = 500; // these values are enforced by the esp32Servo library
 constexpr int MAX_THROTTLE = 2048; // 2500 is the max supported; 2048 makes conversion easier 
@@ -42,8 +42,8 @@ void setup () {
 
   constexpr int pins[numMotors] = {32, 27, 25, 26};
 
-  for (int i = 0; i < numMotors; ++i)
-    escMotors[i] = Motor(pins[i], i);
+//  for (int i = 0; i < numMotors; ++i)
+//    escMotors[i] = Motor(pins[i], i);
   
   Serial.println ("ready!");
 }
@@ -79,7 +79,7 @@ void handleUdp() {
     uint16 *throttles = (uint16*)buffer;
     for (int i = 0; i < 4; ++i) {
       Serial.printf("%d -> %d\n", i, throttles[i]);
-      escMotors[i].setDuty(throttles[i]);
+//      escMotors[i].setDuty(throttles[i]);
     }
   }
 }
