@@ -28,6 +28,7 @@ void Drone::setThrottle(const QList<int> throttles)
     Q_ASSERT_X(throttles.size() == m_propCount, Q_FUNC_INFO, "throttle count missmatch");
 
     m_throttles = throttles;
+
     emit throttlesUpdated_QML();
 }
 
