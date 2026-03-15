@@ -25,6 +25,9 @@ BtDrone::BtDrone(QObject *parent)
         qInfo() << "error: " << error;
     });*/
 
+    qWarning() << "skipping BT";
+    return;
+
     qInfo() << "connecting on BT";
 
     struct sockaddr_rc addr = { 0 };
@@ -50,6 +53,8 @@ BtDrone::BtDrone(QObject *parent)
 
 bool BtDrone::sendCommands()
 {
+    return false;
+
     qInfo() << Q_FUNC_INFO << preparePayload().size();
 
     m_socket->write(preparePayload());
