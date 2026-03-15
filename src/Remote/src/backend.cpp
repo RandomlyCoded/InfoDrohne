@@ -51,7 +51,13 @@ void Backend::setProtocol(const Protocol &newProtocol)
 {
     if (m_protocol == newProtocol)
         return;
+
+    currentDrone()->stop();
+
     m_protocol = newProtocol;
+
+    currentDrone()->start();
+
     emit protocolChanged();
 }
 

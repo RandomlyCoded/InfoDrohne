@@ -36,6 +36,7 @@ BtLEDrone::BtLEDrone(QObject *parent)
     startDiscovery();
 
     m_sendTimer->setInterval(Drone::globalInterval());
+    m_sendTimer->setSingleShot(false);
 
     connect(this, &BtLEDrone::stateChanged, this, &BtLEDrone::onStateChanged);
     connect(m_sendTimer, &QTimer::timeout, this, &BtLEDrone::sendCommands);
