@@ -67,7 +67,7 @@ Rectangle {
 
                 Text {
                     width: slider.width
-                    text: Math.round(slider.value/32767 * 100) + "%"
+                    text: Math.round(slider.value/slider.to * 100) + "%"
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
@@ -108,7 +108,7 @@ Rectangle {
             Text {
                 width: sliderModifier.width
 
-                text: Math.round(sliderModifier.value/32767 * 100) + "%"
+                text: Math.round(sliderModifier.value/sliderModifier.to * 100) + "%"
 
                 anchors.horizontalCenter: parent.horizontalCenter
             }
