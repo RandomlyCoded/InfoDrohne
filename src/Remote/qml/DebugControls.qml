@@ -77,7 +77,7 @@ Rectangle {
 
                     value: modelData
                     from: 0
-                    to: 32767
+                    to: 255
 
                     enabled: enabledToggle.checked
 
@@ -119,8 +119,10 @@ Rectangle {
 
                 orientation: Qt.Vertical
 
-                from: -32768
-                to: 32767
+                from: -256
+                to: 255
+
+                stepSize: 1
 
                 onMoved: {
                     var newThrottles = [0, 0, 0, 0]
