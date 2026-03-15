@@ -70,7 +70,7 @@ private:
     BtDrone *m_btDrone = nullptr;
 
     bool m_debugMode = false;
-    Protocol m_protocol = Bt;
+    Protocol m_protocol = BtLE;
 };
 
 } // namespace randomly
