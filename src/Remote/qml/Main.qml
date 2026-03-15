@@ -39,8 +39,8 @@ Window {
 
             orientation: Qt.Vertical
 
-            from: -32768
-            to: 32767
+            from: -256
+            to: 255
 
             onMoved: {
                 lastValue = value

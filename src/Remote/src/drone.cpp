@@ -11,8 +11,9 @@ namespace {
 
 Q_LOGGING_CATEGORY(lcDrone, "randomly.Drone");
 
-const quint16 clamp_u16(const int v) {
-    return qMin(qMax(0, v), UINT16_MAX);
+quint8 clampU8(int i)
+{
+    return qMax(qMin(i, UINT8_MAX), 0);
 }
 
 } // namespace
@@ -38,7 +39,7 @@ void Drone::setSingleThrottle(const int index, const int value)
 void Drone::forceClampThrottles()
 {
     for (auto &t: m_throttles)
-        t = clamp_u16(t);
+        t = clampU8(t);
 }
 
 QByteArray Drone::preparePayload()
@@ -77,14 +78,14 @@ QByteArray Drone::preparePayload()
     if (Backend::instance()->debugMode()) {
         // writing the list directly would add separators etc.
         for (const auto t: m_throttles)
-            s << clamp_u16(t);
+            s << clampU8(t);
     }
     else {
         for (int i = 0; i < 3; ++i)
-            s <<  clamp_u16(m_direction[i]);
+            s <<  clampU8(m_direction[i]);
 
         for (int i = 0; i < 3; ++i)
-            s <<  clamp_u16(m_rotation[i]);
+            s <<  clampU8(m_rotation[i]);
     }
 
     return payload;
