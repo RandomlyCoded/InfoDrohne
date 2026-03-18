@@ -78,7 +78,7 @@ void setup () {
   IPAddress myIP = WiFi.softAPIP ();
   Serial.print ("AP IP address: ");
   Serial.println (myIP);
- q udp.begin (26122); // Abi 26, Q 12/2
+  udp.begin (26122); // Abi 26, Q 12/2
 
   Serial.println ("Server started. Starting BLE...");
 
