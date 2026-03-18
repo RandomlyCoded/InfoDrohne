@@ -28,15 +28,11 @@ bool shouldSkip(const QBluetoothDeviceInfo &deviceInfo) {
 
 BtLEDrone::BtLEDrone(QObject *parent)
     : randomly::Drone{parent}
-    , m_sendTimer(new QTimer{this})
 {
     connect(m_deviceDiscovery, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered,
             this, &BtLEDrone::onDeviceDiscovered);
 
     startDiscovery();
-
-    m_sendTimer->setInterval(Drone::globalInterval());
-    m_sendTimer->setSingleShot(false);
 
     connect(this, &BtLEDrone::stateChanged, this, &BtLEDrone::onStateChanged);
     connect(m_sendTimer, &QTimer::timeout, this, &BtLEDrone::sendCommands);

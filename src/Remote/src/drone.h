@@ -50,6 +50,8 @@ signals:
 protected:
     QByteArray preparePayload();
 
+    QTimer *m_sendTimer = nullptr;
+
 private:
     constexpr static int m_propCount = 4; // hardcode for now
     QList<int> m_throttles;

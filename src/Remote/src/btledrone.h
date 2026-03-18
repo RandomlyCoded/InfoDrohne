@@ -55,8 +55,6 @@ private:
     bool m_running = false;
     QLowEnergyService *m_service = nullptr;
     QLowEnergyController *m_device = nullptr;
-
-    QTimer *m_sendTimer = nullptr;
 };
 
 } // namespace randomly

@@ -14,7 +14,6 @@ UdpDrone::UdpDrone(QObject *parent)
     : randomly::Drone{parent}
     , m_sendSocket(new QUdpSocket{this})
     , m_receiveSocket(new QUdpSocket{this})
-    , m_udpTimer(new QTimer{this})
 {
     m_receiveSocket->bind(m_port + 1); // 2026 12/3 (Tutorium, cooler Zufall)
 
@@ -30,8 +29,7 @@ UdpDrone::UdpDrone(QObject *parent)
         }
     });
 
-    connect(m_udpTimer, &QTimer::timeout, this, &Drone::sendCommands);
-    m_udpTimer->setInterval(Drone::globalInterval());
+    connect(m_sendTimer, &QTimer::timeout, this, &Drone::sendCommands);
 }
 
 bool UdpDrone::sendCommands()

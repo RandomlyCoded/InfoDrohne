@@ -9,7 +9,6 @@ namespace randomly {
 
 BtDrone::BtDrone(QObject *parent)
     : randomly::Drone{parent}
-    , m_sendTimer(new QTimer{this})
 {
 /*
     QBluetoothSocket *s = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
@@ -47,7 +46,6 @@ BtDrone::BtDrone(QObject *parent)
         qWarning("failed!");
     }
 
-    m_sendTimer->setInterval(globalInterval());
     connect(m_sendTimer, &QTimer::timeout, this, &randomly::BtDrone::sendCommands);
 }
 

@@ -22,7 +22,6 @@ public slots:
 
 private:
     bool m_running = false;
-    QTimer *m_sendTimer = nullptr;
 
     QFile *m_socket;
 };

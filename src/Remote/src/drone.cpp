@@ -21,7 +21,11 @@ quint8 clampU8(int i)
 Drone::Drone(QObject *parent)
     : QObject{parent}
     , m_throttles{QList<int>(m_propCount, 0)}
-{}
+    , m_sendTimer(new QTimer{this})
+{
+    m_sendTimer->setSingleShot(false);
+    m_sendTimer->setInterval(globalInterval());
+}
 
 void Drone::setThrottle(const QList<int> throttles)
 {
