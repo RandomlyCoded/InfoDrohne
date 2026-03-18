@@ -20,7 +20,7 @@ public slots:
 
 private:
     const QHostAddress m_drone = QHostAddress("192.168.4.1"); // 127.0.4.0
-    const quint16 m_port = 8080;
+    const quint16 m_port = 26122; // Abi 26, Q 12/2
 
     QUdpSocket *m_sendSocket;
     QUdpSocket *m_receiveSocket;
