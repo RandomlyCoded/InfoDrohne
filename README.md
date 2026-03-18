@@ -22,4 +22,5 @@ die Propellerblätter.
 ## Abhängigkeiten
 
 [ESP32Servo](https://github.com/madhephaestus/ESP32Servo?tab=readme-ov-file)
+
 [Qt](https://qt.io) Core, Gui, QML, Quick, Bluetooth, Network
