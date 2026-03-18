@@ -16,7 +16,7 @@ UdpDrone::UdpDrone(QObject *parent)
     , m_receiveSocket(new QUdpSocket{this})
     , m_udpTimer(new QTimer{this})
 {
-    m_receiveSocket->bind(8081);
+    m_receiveSocket->bind(m_port + 1); // 2026 12/3 (Tutorium, cooler Zufall)
 
     connect(m_receiveSocket, &QUdpSocket::readyRead, this, [&] {
         while (m_receiveSocket->hasPendingDatagrams())
