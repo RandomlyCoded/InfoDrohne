@@ -61,16 +61,4 @@ bool BtDrone::sendCommands()
     return true;
 }
 
-void BtDrone::start()
-{
-    qInfo() << Q_FUNC_INFO;
-    m_sendTimer->start();
-}
-
-void BtDrone::stop()
-{
-    qInfo() << Q_FUNC_INFO;
-    m_sendTimer->stop();
-}
-
 } // namespace randomly
