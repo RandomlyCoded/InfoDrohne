@@ -1,7 +1,26 @@
+#if defined(ESP32)
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <WiFi.h>
+
+#define ENABLE_BLE 1
+
+#elif defined(ESP8266)
+
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
+
+using NetworkUDP    = WiFiUDP;
+using NetworkClient = WiFiClient;
+
+#define ENABLE_BLE 0
+
+#else
+
+#error "Unsupported platform. Use an ESP32."
+
+#endif // defined(ESP32)
 
 #include "motor.h"
 
@@ -21,7 +40,7 @@ constexpr auto characteristicUUID = "ebc49f11-9ffc-96b2-2a4e-6994a99175b5";
 
 constexpr bool doPrint = false;
 
-bool btMode = true;
+bool btMode          = true && ENABLE_BLE;
 bool lastButtonState = false;
 
 NetworkUDP udp;
@@ -46,6 +65,7 @@ void handlePacket(const char *buffer, int len)
   }
 }
 
+#if ENABLE_BLE
 class BLECallbacks : public BLECharacteristicCallbacks
 {
   void onWrite(BLECharacteristic *pCharacteristic) {
@@ -60,6 +80,7 @@ class BLECallbacks : public BLECharacteristicCallbacks
     handlePacket(value.c_str(), value.length());
   }
 };
+#endif // ENABLE_BLE
 
 bool expectedLength(char flags)
 {
@@ -69,9 +90,15 @@ bool expectedLength(char flags)
   return 7; // flag + 3x dir + 3x rotation
 }
 
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 4
+#endif // LED_BUILTIN
+
 void setup () {
   pinMode (LED_btMode, OUTPUT);
   pinMode (LED_connStatus, OUTPUT);
+
+  pinMode(LED_BUILTIN, OUTPUT);
 
   Serial.begin (115200);
   Serial.println (WiFi.softAP("InfoDrone-WiFi", "sekuriti")); // security, but stonks
@@ -83,6 +110,7 @@ void setup () {
 
   Serial.println ("Server started. Starting BLE...");
 
+#if ENABLE_BLE
   BLEDevice::init("InfoDrone-BLE");
   auto bleServer = BLEDevice::createServer();
 
@@ -93,22 +121,34 @@ void setup () {
 
   bleService->start();
   bleServer->getAdvertising()->start();
+#else
+  Serial.println("skipping!");
+#endif // ENABLE_BLE
 
   Serial.println("attaching Motors...");
 
   analogWriteFreq(pwmFreq);
   analogWriteRange(pwmRange);
 
+#if defined(ESP32)
   constexpr int pins[numMotors] = {12, 13, 15, 14};
+#elif defined(ESP8266)
+  constexpr int pins[numMotors] = {D8, D7, D6, D5};
+#endif // defined ESP32
+
   for (int i = 0; i < numMotors; ++i)
     escMotors[i].attach(pins[i]);
   
   Serial.println("waiting for arm...");
-  delay(3000 * 0);
+
   Serial.println ("ready!");
 }
 
 void loop () {
+  const auto now = millis() % 1000;
+
+  analogWrite(LED_BUILTIN, now < 250 ? 16 : 0);
+
   bool buttonPressed = analogRead(PIN_button) > 4000;
   if (buttonPressed && !lastButtonState && false) { // we don't support switching rn
     btMode ^= 1;
@@ -118,7 +158,7 @@ void loop () {
   if (!btMode) // btle is handled via callbacks
     handleUdp();
   
-  delay(1);  
+  delay(1);
 }
 
 void handleUdp() {
