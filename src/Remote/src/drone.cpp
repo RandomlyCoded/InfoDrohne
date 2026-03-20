@@ -33,7 +33,9 @@ void Drone::setThrottle(const QList<int> throttles)
 
     m_throttles = throttles;
 
-    emit throttlesUpdated_QML();
+    qInfo() << throttles;
+
+    emit throttlesChanged();
 }
 
 void Drone::setSingleThrottle(const int index, const int value)

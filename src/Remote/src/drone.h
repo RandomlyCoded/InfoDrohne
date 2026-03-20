@@ -12,7 +12,7 @@ class Drone : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int propCount READ propCount CONSTANT FINAL)
-    Q_PROPERTY(QList<int> throttles READ throttles WRITE setThrottle NOTIFY throttlesUpdated_QML FINAL)
+    Q_PROPERTY(QList<int> throttles READ throttles WRITE setThrottle NOTIFY throttlesChanged FINAL)
     Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged FINAL)
     Q_PROPERTY(QVector3D rotation READ rotation WRITE setRotation NOTIFY rotationChanged FINAL)
 
@@ -41,7 +41,7 @@ public slots:
     void forceClampThrottles();
 
 signals:
-    void throttlesUpdated_QML();
+    void throttlesChanged();
 
     void rotationChanged();
     void directionChanged();
