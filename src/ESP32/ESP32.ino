@@ -1,15 +1,16 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
-#include <ESP32Servo.h>
 #include <WiFi.h>
 
-constexpr int numMotors = 4;
-ESP32PWM escMotors[numMotors];
+#include "motor.h"
 
-int packetCount                       = 0;
-constexpr int    freq                 = 1000;
-constexpr double DEBUG_THROTTLE_SCALE = 1. / 256;
+constexpr int numMotors = 4;
+Motor escMotors[numMotors];
+
+          int packetCount = 0;
+constexpr int pwmFreq     = 50;
+constexpr int pwmRange    = 1023; // 10 bit
 
 constexpr int LED_btMode     = 2;
 constexpr int LED_connStatus = 5;
@@ -38,9 +39,9 @@ void handlePacket(const char *buffer, int len)
     uint8_t *throttles = (uint8_t*)(buffer + 1);
     for (int i = 0; i < 4; ++i) {
       if (doPrint)
-        Serial.printf("%d -> %d (%f)\n", i, throttles[i], throttles[i] * DEBUG_THROTTLE_SCALE);
+        Serial.printf("%d -> %d\n", i, throttles[i]);
       
-      escMotors[i].writeScaled(throttles[i] * DEBUG_THROTTLE_SCALE);
+      escMotors[i].setSpeed(throttles[i] / 255.);
     }
   }
 }
@@ -94,11 +95,13 @@ void setup () {
   bleServer->getAdvertising()->start();
 
   Serial.println("attaching Motors...");
+
+  analogWriteFreq(pwmFreq);
+  analogWriteRange(pwmRange);
+
   constexpr int pins[numMotors] = {12, 13, 15, 14};
-  for (int i = 0; i < numMotors; ++i) {
-	  ESP32PWM::allocateTimer(i);
-    escMotors[i].attachPin(pins[i], freq, 10);
-  }
+  for (int i = 0; i < numMotors; ++i)
+    escMotors[i].attach(pins[i]);
   
   Serial.println("waiting for arm...");
   delay(3000 * 0);
