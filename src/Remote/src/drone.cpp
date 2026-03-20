@@ -20,7 +20,7 @@ quint8 clampU8(int i)
 
 Drone::Drone(QObject *parent)
     : QObject{parent}
-    , m_throttles{QList<int>(m_propCount, 0)}
+    , m_throttles{QList<int>(propCount(), 0)}
     , m_sendTimer(new QTimer{this})
 {
     m_sendTimer->setSingleShot(false);
@@ -29,7 +29,7 @@ Drone::Drone(QObject *parent)
 
 void Drone::setThrottle(const QList<int> throttles)
 {
-    Q_ASSERT_X(throttles.size() == m_propCount, Q_FUNC_INFO, "throttle count missmatch");
+    Q_ASSERT_X(throttles.size() == propCount(), Q_FUNC_INFO, "throttle count missmatch");
 
     m_throttles = throttles;
 
