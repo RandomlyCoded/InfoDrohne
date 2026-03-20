@@ -16,106 +16,27 @@ Window {
 
     property int margins: 48
 
-    Button {
-        visible: false
-        onClicked: Qt.createQmlObject("import DroneControl; BtDrone {}", parent, "mfucklthis")
-    }
+    TabBar {
+        id: tabs
 
-    RowLayout {
         width: parent.width
 
-        height: Math.max(heightCtrl.height, joystick.height)
-
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: margins
-
-        Slider {
-            id: heightCtrl
-
-            property real lastValue: 0
-
-            Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
-            Layout.leftMargin: margins * 2
-
-            orientation: Qt.Vertical
-
-            from: -256
-            to: 255
-
-            onMoved: {
-                lastValue = value
-            }
-
-            onPressedChanged: {
-                // started pressing
-                if (pressed)
-                    return
-
-                // basically onRelease:
-                lastValue = 0
-                value = 0
-
-                Backend.drone.forceClampThrottles();
-            }
+        TabButton {
+            text: qsTr("controls")
         }
 
-        Joystick {
-            id: joystick
-
-            Layout.alignment: Qt.AlignRight | Qt.AlignBottom
-            Layout.rightMargin: margins * 2
-
-            diameter: 100
+        TabButton {
+            text: qsTr("settings")
         }
     }
 
-    DebugControls {
-        visible: Backend.debugMode
-    }
+    StackLayout {
+        anchors.fill: parent
+        anchors.topMargin: tabs.height
 
-    RowLayout {
-        width: parent.width
+        currentIndex: tabs.currentIndex
 
-        ColumnLayout {
-            Layout.alignment: Qt.ALignLeft | Qt.AlignTop
-            Layout.leftMargin: margins
-            Layout.topMargin: margins
-
-            RadioButton {
-                text: "BtLE"
-
-                checked: Backend.protocol === Backend.BtLE
-                onToggled: Backend.protocol = Backend.BtLE
-            }
-
-            RadioButton {
-                text: "Bt"
-
-                checked: Backend.protocol === Backend.Bt
-                onToggled: Backend.protocol = Backend.Bt
-            }
-
-            RadioButton {
-                text: "UDP"
-
-                checked: Backend.protocol === Backend.Udp
-                onToggled: Backend.protocol = Backend.Udp
-            }
-        }
-
-        Item { Layout.fillWidth: true; } // spacer
-
-        Switch {
-            id: debugToggle
-            text: "debug mode"
-
-            onToggled: Backend.toggleDebug();
-
-            visible: Backend.hasDebugMode();
-
-            Layout.alignment: Qt.ALignRight | Qt.AlignTop
-            Layout.rightMargin: margins
-            Layout.topMargin: margins
-        }
+        ControlScreen {}
+        SettingsScreen {}
     }
 }

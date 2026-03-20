@@ -24,8 +24,10 @@ qt_add_qml_module(appRemote
     QML_FILES
         qml/Main.qml
 
+        qml/ControlScreen.qml
         qml/DebugControls.qml
         qml/Joystick.qml
+        qml/SettingsScreen.qml
 )
 
 add_custom_target (Documentation
