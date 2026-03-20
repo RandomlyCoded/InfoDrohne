@@ -88,9 +88,9 @@ signals:
     void highTrimsChanged();
 
 private:
-    BtLEDrone *m_btleDrone = nullptr;
-    UdpDrone *m_udpDrone = nullptr;
-    BtDrone *m_btDrone = nullptr;
+    BtLEDrone *const m_btleDrone = nullptr;
+    UdpDrone  *const m_udpDrone = nullptr;
+    BtDrone   *const m_btDrone = nullptr;
 
     bool m_debugMode = false;
     Protocol m_protocol = BtLE;
