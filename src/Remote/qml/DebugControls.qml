@@ -32,10 +32,13 @@ Rectangle {
 
         Column {
             spacing: 8
+
             Button {
-                text: "up"
-                onPressed: console.log("start flying up (increase all throttles?)")
-                onReleased: console.log("stop flying up (reset all throttles again)")
+                text: "set all to 0"
+                onClicked: {
+                    console.log("resetting all motors")
+                    Backend.drone.throttles = [0, 0, 0, 0]
+                }
             }
 
             Button {
@@ -60,7 +63,7 @@ Rectangle {
         }
 
         Repeater {
-            model: Backend.drone.throttles
+            model: Backend.drone.propCount
 
             Column {
                 spacing: 4
@@ -75,29 +78,59 @@ Rectangle {
                     id: slider
                     orientation: Qt.Vertical
 
-                    value: modelData
+                    stepSize: 1
+
+                    value: Backend.drone.throttles[modelData]
                     from: 0
                     to: 255
 
                     enabled: enabledToggle.checked
+                    live: true
+                    wheelEnabled: true
 
-                    onMoved: Backend.drone.setSingleThrottle(model.index, value)
+                    onMoved: Backend.drone.setSingleThrottle(modelData, value)
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 Text {
                     id: indexInfo
 
-                    text: model.index
+                    text: modelData
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 CheckBox {
                     id: enabledToggle
-                    checked: throttleStatus[model.index]
+                    checked: throttleStatus[modelData]
 
-                    onToggled: throttleStatus[model.index] = checked
+                    onToggled: throttleStatus[modelData] = checked
                     anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Button {
+                    text: "+"
+
+                    width: slider.width
+
+                    visible: slider.enabled
+
+                    onClicked: {
+                        slider.increase()
+                        slider.moved()
+                    }
+                }
+
+                Button {
+                    text: "-"
+
+                    width: slider.width
+
+                    visible: slider.enabled
+
+                    onClicked: {
+                        slider.decrease()
+                        slider.moved()
+                    }
                 }
             }
         }
