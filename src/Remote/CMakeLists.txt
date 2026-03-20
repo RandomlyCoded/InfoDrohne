@@ -11,19 +11,21 @@ qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appRemote
     src/main.cpp
+
+    src/backend.h   src/backend.cpp
+    src/btdrone.h   src/btdrone.cpp
+    src/btledrone.h src/btledrone.cpp
     src/drone.h     src/drone.cpp
     src/udpdrone.h  src/udpdrone.cpp
-    src/btledrone.h src/btledrone.cpp
-    src/btdrone.h   src/btdrone.cpp
 )
 
 qt_add_qml_module(appRemote
     URI Remote
     QML_FILES
         qml/Main.qml
-        QML_FILES qml/DebugControls.qml
-        QML_FILES qml/Joystick.qml
-        SOURCES src/backend.h src/backend.cpp
+
+        qml/DebugControls.qml
+        qml/Joystick.qml
 )
 
 add_custom_target (Documentation
