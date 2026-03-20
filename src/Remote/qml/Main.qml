@@ -8,7 +8,7 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: "random Remote control"
+    title: qsTr("random Remote control")
 
     flags: Backend.windowFlags()
 
