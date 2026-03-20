@@ -20,7 +20,7 @@ public:
     explicit Drone(QObject *parent = nullptr);
 
     constexpr static int globalInterval() { return 20; }
-    constexpr int propCount() const { return m_propCount; }
+    constexpr static int propCount() { return 4; }
     QList<int> throttles() const { return m_throttles; }
 
     QVector3D direction() const { return m_direction; }
@@ -53,7 +53,6 @@ protected:
     QTimer *m_sendTimer = nullptr;
 
 private:
-    constexpr static int m_propCount = 4; // hardcode for now
     QList<int> m_throttles;
 
     QVector3D m_direction;
