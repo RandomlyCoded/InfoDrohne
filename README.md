@@ -9,7 +9,7 @@ Repo/Docs zu unserem Softwareprojekt Q4 2025/26
 
 [Docs](https://github.com/RandomlyCoded/InfoDrohne/wiki)
 
-## Beschreibung der Projektide
+## Beschreibung der Projektidee
 
 Die Idee ist es, einen ESP32-basierten Quadcopter zu bauen, der hoffentlich am Ende des Projekts fliegt.
 Dabei werden wir auf einem Projekt aus dem letzten Schuljahr aufbauen.
