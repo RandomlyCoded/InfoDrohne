@@ -73,7 +73,7 @@ QByteArray Drone::preparePayload()
             s <<  clampU8(m_rotation[i]);
     }
 
-    qInfo() << payload.toHex(':');
+//    qInfo() << payload.toHex(':');
 
     return payload;
 }
