@@ -2,6 +2,8 @@
 
 namespace {
 
+constexpr double maxStep = 1.0/500.0; // full ramp (0-1) should take ~0.5 seconds
+
 template<typename T>
 constexpr T clamp(T value, T low, T high)
 {
@@ -42,11 +44,20 @@ void Motor::attach(int pin)
   setSpeed(0);
 }
 
-void Motor::setSpeed(double speed)
+void Motor::setSpeed(double targetSpeed)
 {
-  if (speed < 0 || speed > 51)
-    return;
+  m_targetSpeed = clamp(targetSpeed, MinSpeed, MaxSpeed);
+}
 
-  ledcWrite(m_pin, speedToDuty(speed));
-  m_speed = speed;
+void Motor::update()
+{
+  if (m_actualSpeed < m_targetSpeed) { // delta > 0
+    m_actualSpeed = min({m_actualSpeed + maxStep, m_targetSpeed, MaxSpeed});
+  } else if (m_actualSpeed > m_targetSpeed) { // delta < 0
+    m_actualSpeed = max({m_actualSpeed - maxStep, m_targetSpeed, MinSpeed});
+  } else { // m_actualSpeed == m_targetSpeed
+    return;
+  }
+
+  ledcWrite(m_pin, speedToDuty(m_actualSpeed));
 }

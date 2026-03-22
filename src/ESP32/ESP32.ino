@@ -160,7 +160,10 @@ void loop () {
   if (!btMode) // btle is handled via callbacks
     handleUdp();
   
-  delay(1);
+  for (auto motor: escMotors)
+    motor.update();
+
+  delay(1); // avoid overheating
 }
 
 void handleUdp() {
