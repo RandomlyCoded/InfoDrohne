@@ -91,7 +91,7 @@ bool expectedLength(char flags)
 }
 
 #ifndef LED_BUILTIN
-#define LED_BUILTIN 4
+#define LED_BUILTIN 8
 #endif // LED_BUILTIN
 
 void setup () {
@@ -131,7 +131,7 @@ void setup () {
   analogWriteRange(pwmRange);
 
 #if defined(ESP32)
-  constexpr int pins[numMotors] = {12, 13, 15, 14};
+  constexpr int pins[numMotors] = {A0, A1, A2, A3};
 #elif defined(ESP8266)
   constexpr int pins[numMotors] = {D8, D7, D6, D5};
 #endif // defined ESP32
