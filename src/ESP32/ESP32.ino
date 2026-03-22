@@ -24,6 +24,17 @@ using NetworkClient = WiFiClient;
 
 #include "motor.h"
 
+enum class Command {
+  SetMotionVectors = 0x20,
+
+  OptionSelectUDP = 0x40,
+  OptionSelectBLE = 0x41,
+  OptionSelectBtC = 0x42, // Bluetooth Classic, duh
+
+  DebugSetThrottle   = 0x80,
+  DebugEnableLogging = 0x81
+};
+
 constexpr int numMotors = 4;
 auto escMotors = std::array<Motor, numMotors> {};
 
@@ -38,13 +49,50 @@ constexpr int PIN_button     = 33;
 constexpr auto serviceUUID        = "69fc8256-d3ca-9112-bce0-388de24860d3";
 constexpr auto characteristicUUID = "ebc49f11-9ffc-96b2-2a4e-6994a99175b5";
 
-constexpr bool doPrint = true;
+bool doPrint = false;
 
 bool btMode          = true && ENABLE_BLE;
 bool lastButtonState = false;
 
 NetworkUDP udp;
 NetworkClient remote;
+
+void setMotionVectors(const char *buffer)
+{
+  // TODO: implement motion vectors
+}
+
+void selectUDP()
+{
+  btMode = false;
+}
+
+void selectBLE() {
+  btMode = true;
+}
+
+void selectBtC() {
+  Serial.println("ERROR: BtC is not supported. Forcing BLE...");
+
+  btMode = true;
+}
+
+void enableLogging(const char *buffer)
+{
+  doPrint = buffer[1];
+}
+
+void setDebugThrottle(const char *buffer) {
+    const auto throttles = reinterpret_cast<const uint8_t*>(buffer + 1);
+
+    for (int i = 0; i < 4; ++i) {
+      if (doPrint)
+        Serial.printf("%d -> %d\n", i, throttles[i]);
+      
+      escMotors[i].setSpeed(throttles[i] / 255.);
+    }
+
+}
 
 void handlePacket(const char *buffer, int len)
 {
@@ -54,14 +102,15 @@ void handlePacket(const char *buffer, int len)
   if (len < expectedLength(buffer[0])) // incomplete packet
     return;
 
-  if (buffer[0] & 128) { // debug
-    uint8_t *throttles = (uint8_t*)(buffer + 1);
-    for (int i = 0; i < 4; ++i) {
-      if (doPrint)
-        Serial.printf("%d -> %d\n", i, throttles[i]);
-      
-      escMotors[i].setSpeed(throttles[i] / 255.);
-    }
+  switch (static_cast<Command>(buffer[0])) {
+    case Command::SetMotionVectors: setMotionVectors(buffer); break;
+
+    case Command::OptionSelectUDP: selectUDP(); break;
+    case Command::OptionSelectBLE: selectBLE(); break;
+    case Command::OptionSelectBtC: selectBtC(); break;
+
+    case Command::DebugSetThrottle: setDebugThrottle(buffer); break;
+    case Command::DebugEnableLogging: enableLogging(buffer); break;
   }
 }
 
@@ -82,12 +131,20 @@ class BLECallbacks : public BLECharacteristicCallbacks
 };
 #endif // ENABLE_BLE
 
-bool expectedLength(char flags)
+size_t expectedLength(const uint8_t flags)
 {
-  if (flags & 128) // debug
-    return 5; // flag + 4x throttle
+  switch (static_cast<Command>(flags)) {
+    case Command::SetMotionVectors: return 7;
 
-  return 7; // flag + 3x dir + 3x rotation
+    case Command::OptionSelectUDP: return 1;
+    case Command::OptionSelectBLE: return 1;
+    case Command::OptionSelectBtC: return 1;
+
+    case Command::DebugSetThrottle: return 5;
+    case Command::DebugEnableLogging: return 2;
+  }
+
+  return 0;
 }
 
 #ifndef LED_BUILTIN
