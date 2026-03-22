@@ -34,6 +34,11 @@ void Motor::attach(int pin)
   m_pin = pin;
 
   pinMode(m_pin, OUTPUT);
+
+  static constexpr int resolution = ceil(log2(pwmRange));
+
+  ledcAttach(m_pin, pwmFreq, resolution);
+
   setSpeed(0);
 }
 
@@ -42,6 +47,6 @@ void Motor::setSpeed(double speed)
   if (speed < 0 || speed > 51)
     return;
 
-  analogWrite(m_pin, speedToDuty(speed));
+  ledcWrite(m_pin, speedToDuty(speed));
   m_speed = speed;
 }

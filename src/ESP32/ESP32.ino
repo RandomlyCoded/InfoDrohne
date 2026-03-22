@@ -127,9 +127,6 @@ void setup () {
 
   Serial.println("attaching Motors...");
 
-  analogWriteFreq(pwmFreq);
-  analogWriteRange(pwmRange);
-
 #if defined(ESP32)
   constexpr int pins[numMotors] = {A0, A1, A2, A3};
 #elif defined(ESP8266)
@@ -151,14 +148,15 @@ void setup () {
 void loop () {
   const auto now = millis() % 1000;
 
-  analogWrite(LED_BUILTIN, now < 250 ? 16 : 0);
+  ledcWrite(LED_BUILTIN, now < 250 ? pwmRange : 0);
 
-  bool buttonPressed = analogRead(PIN_button) > 4000;
+/*  bool buttonPressed = analogRead(PIN_button) > 4000;
   if (buttonPressed && !lastButtonState && false) { // we don't support switching rn
     btMode ^= 1;
   }
 
-  lastButtonState = buttonPressed;
+  lastButtonState = buttonPressed;*/
+
   if (!btMode) // btle is handled via callbacks
     handleUdp();
   
