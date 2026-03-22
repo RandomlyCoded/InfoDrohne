@@ -38,7 +38,7 @@ constexpr int PIN_button     = 33;
 constexpr auto serviceUUID        = "69fc8256-d3ca-9112-bce0-388de24860d3";
 constexpr auto characteristicUUID = "ebc49f11-9ffc-96b2-2a4e-6994a99175b5";
 
-constexpr bool doPrint = false;
+constexpr bool doPrint = true;
 
 bool btMode          = true && ENABLE_BLE;
 bool lastButtonState = false;
