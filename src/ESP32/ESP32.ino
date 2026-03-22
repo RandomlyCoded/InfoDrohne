@@ -25,7 +25,7 @@ using NetworkClient = WiFiClient;
 #include "motor.h"
 
 constexpr int numMotors = 4;
-Motor escMotors[numMotors];
+auto escMotors = std::array<Motor, numMotors> {};
 
           int packetCount = 0;
 constexpr int pwmFreq     = 50;
