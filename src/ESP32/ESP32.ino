@@ -142,6 +142,10 @@ void setup () {
   Serial.println("waiting for arm...");
 
   Serial.println ("ready!");
+  Serial.print ("MODE: ");
+  Serial.println(btMode ? "BtLE" : "UDP");
+
+  ledcAttach(LED_BUILTIN, pwmFreq, ceil(log2(pwmRange)));
 }
 
 void loop () {
