@@ -1,3 +1,6 @@
 [submodule "InfoDrohne.wiki"]
 	path = InfoDrohne.wiki
 	url = https://github.com/RandomlyCoded/InfoDrohne.wiki.git
+[submodule "third-party/korad-logger"]
+	path = third-party/korad-logger
+	url = git@github.com:derf/korad-logger.git
