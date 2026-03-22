@@ -57,6 +57,8 @@ private:
 
     QVector3D m_direction;
     QVector3D m_rotation;
+
+    void dumpThrottles();
 };
 
 } // namespace randomly

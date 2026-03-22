@@ -25,6 +25,8 @@ Drone::Drone(QObject *parent)
 {
     m_sendTimer->setSingleShot(false);
     m_sendTimer->setInterval(globalInterval());
+
+    connect(this, &Drone::throttlesChanged, this, &Drone::dumpThrottles);
 }
 
 void Drone::setThrottle(const QList<int> throttles)
@@ -74,6 +76,20 @@ QByteArray Drone::preparePayload()
     qInfo() << payload.toHex(':');
 
     return payload;
+}
+
+void Drone::dumpThrottles()
+{
+    static QFile dumpFile("throttles.csv");
+    static bool open = dumpFile.open(QFile::WriteOnly);
+    static QTextStream stream(&dumpFile);
+
+    const auto now = QDateTime::currentDateTimeUtc();
+    stream << now.toMSecsSinceEpoch()/1000 << "." << now.toMSecsSinceEpoch() % 1000
+           << "|" << m_throttles[0]
+           << "|" << m_throttles[1]
+           << "|" << m_throttles[2]
+           << "|" << m_throttles[3] << Qt::endl;
 }
 
 } // namespace randomly
