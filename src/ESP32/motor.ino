@@ -52,10 +52,13 @@ void Motor::setSpeed(double targetSpeed)
 void Motor::update()
 {
   if (m_actualSpeed < m_targetSpeed) { // delta > 0
+    // Serial.printf("up %d from %g + %g (%g %g %g)\n", m_pin, m_actualSpeed, maxStep, m_actualSpeed + maxStep, m_targetSpeed, MaxSpeed);
     m_actualSpeed = min({m_actualSpeed + maxStep, m_targetSpeed, MaxSpeed});
   } else if (m_actualSpeed > m_targetSpeed) { // delta < 0
+    // Serial.printf("down %d\n", m_pin);
     m_actualSpeed = max({m_actualSpeed - maxStep, m_targetSpeed, MinSpeed});
   } else { // m_actualSpeed == m_targetSpeed
+    // Serial.printf("ignore %d\n", m_pin);
     return;
   }
 

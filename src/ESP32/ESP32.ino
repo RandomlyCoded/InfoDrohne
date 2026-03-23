@@ -52,10 +52,14 @@ void loop () {
   
   for (auto &motor: escMotors) {
     motor.update();
-
+/*
     if (doPrint)
-      Serial.printf("%f (target %f)\n", motor.currentSpeed(), motor.targetSpeed());
+      Serial.printf("%f (target %f)\n", motor.currentSpeed(), motor.targetSpeed());*/
   }
+
+/*  if (doPrint)
+    Serial.println(); */
+  // TODO: debug level
 
   delay(1); // avoid overheating
 }
