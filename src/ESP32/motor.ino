@@ -2,7 +2,7 @@
 
 namespace {
 
-constexpr double maxStep = 1.0/500.0; // full ramp (0-1) should take ~0.5 seconds
+constexpr double maxStep = 1.0/1.0; // full ramp (0-1) should take ~0.5 seconds
 
 template<typename T>
 constexpr T clamp(T value, T low, T high)
