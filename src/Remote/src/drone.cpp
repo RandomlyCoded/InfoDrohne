@@ -57,8 +57,6 @@ void Drone::setThrottle(const QList<int> throttles)
 
     m_throttles = throttles;
 
-    qInfo() << throttles;
-
     emit throttlesChanged();
 }
 
