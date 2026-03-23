@@ -20,6 +20,7 @@ class Backend : public QObject
     Q_PROPERTY(Protocol protocol READ protocol WRITE setProtocol RESET resetProtocol NOTIFY protocolChanged FINAL)
     Q_PROPERTY(QList<int> lowTrims READ lowTrims WRITE setLowTrims RESET resetLowTrims NOTIFY lowTrimsChanged FINAL)
     Q_PROPERTY(QList<int> highTrims READ highTrims WRITE setHighTrims RESET resetHighTrims NOTIFY highTrimsChanged FINAL)
+    Q_PROPERTY(bool enableEmbeddedLogging READ enableEmbeddedLogging WRITE setEmbeddedLogging RESET resetEmbeddedLogging NOTIFY enableEmeddedLoggingChanged FINAL)
 
 public:
     enum Protocol {
@@ -57,6 +58,9 @@ public:
     void setHighTrims(const QList<int> &newHighTrims);
     void resetHighTrims();
 
+    bool enableEmbeddedLogging() const { return m_enableEmbeddedLogging; }
+    void setEmbeddedLogging(bool newEnableEmbeddedLogging);
+    void resetEmbeddedLogging();
 
 public slots:
     bool hasDebugMode() const {
@@ -86,6 +90,7 @@ signals:
     void lowTrimsChanged();
 
     void highTrimsChanged();
+    void enableEmeddedLoggingChanged();
 
 private:
     BtLEDrone *const m_btleDrone = nullptr;
@@ -93,6 +98,7 @@ private:
     BtDrone   *const m_btDrone = nullptr;
 
     bool m_debugMode = false;
+    bool m_enableEmbeddedLogging;
     Protocol m_protocol = BtLE;
     QList<int> m_lowTrims;
     QList<int> m_highTrims;

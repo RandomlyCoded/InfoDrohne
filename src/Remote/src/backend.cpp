@@ -7,10 +7,11 @@ namespace
 
 using namespace Qt::StringLiterals;
 
-constexpr auto key_lowTrims  = u"lowTrims"_sv;
-constexpr auto key_highTrims = u"highTrims"_sv;
-constexpr auto key_debug     = u"debug"_sv;
-constexpr auto key_protocol  = u"protocol"_sv;
+constexpr auto key_lowTrims        = u"lowTrims"_sv;
+constexpr auto key_highTrims       = u"highTrims"_sv;
+constexpr auto key_debug           = u"debug"_sv;
+constexpr auto key_protocol        = u"protocol"_sv;
+constexpr auto key_embeddedLogging = u"embeddedLogging"_sv;
 
 static Backend *__instance = nullptr;
 
@@ -123,6 +124,22 @@ void Backend::resetDebugMode()
 void Backend::resetProtocol()
 {
     setProtocol(qvariant_cast<Protocol>(m_settings->value(key_protocol, BtLE)));
+}
+
+void Backend::setEmbeddedLogging(bool newEnableEmbeddedLogging)
+{
+    if (m_enableEmbeddedLogging == newEnableEmbeddedLogging)
+        return;
+
+    m_enableEmbeddedLogging = newEnableEmbeddedLogging;
+    currentDrone()->sendCommand(Drone::Command::DebugEnableLogging);
+
+    emit enableEmeddedLoggingChanged();
+}
+
+void Backend::resetEmbeddedLogging()
+{
+    setEmbeddedLogging(qvariant_cast<bool>(m_settings->value(key_embeddedLogging, false)));
 }
 
 } // namespace randomly

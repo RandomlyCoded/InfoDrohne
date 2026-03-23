@@ -36,18 +36,29 @@ RowLayout {
 
     Item { Layout.fillWidth: true; } // spacer
 
-    Switch {
-        id: debugToggle
-        text: "debug mode"
-
-        checked: Backend.debugMode
-
-        onToggled: Backend.debugMode = checked
-
-        visible: Backend.hasDebugMode();
-
+    ColumnLayout {
         Layout.alignment: Qt.ALignRight | Qt.AlignTop
         Layout.rightMargin: margins
         Layout.topMargin: margins
+
+        Switch {
+            id: debugToggle
+            text: "debug mode"
+
+            checked: Backend.debugMode
+
+            onToggled: Backend.debugMode = checked
+
+            visible: Backend.hasDebugMode();
+            }
+
+        Switch {
+            id: loggingToggle
+            text: "embedded logging"
+
+            checked: Backend.enableEmbeddedLogging
+
+            onToggled: Backend.enableEmbeddedLogging = checked
+        }
     }
 }
