@@ -133,8 +133,6 @@ void BtLEDrone::onServiceStateChanged(QLowEnergyService *service, QLowEnergyServ
 
         m_service = service;
 
-        service->writeCharacteristic(tx, "Hello Dudes\n");
-
         m_state = Ready;
         emit stateChanged();
     }
