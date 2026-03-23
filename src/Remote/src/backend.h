@@ -47,6 +47,7 @@ public:
 
     Protocol protocol() const { return m_protocol; }
     void setProtocol(const Protocol &newProtocol);
+    void resetProtocol();
 
     QList<int> lowTrims() const { return m_lowTrims; }
     void setLowTrims(const QList<int> &newLowTrims);
@@ -56,7 +57,6 @@ public:
     void setHighTrims(const QList<int> &newHighTrims);
     void resetHighTrims();
 
-    void resetProtocol();
 
 public slots:
     bool hasDebugMode() const {
