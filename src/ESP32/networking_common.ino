@@ -30,6 +30,8 @@ void handlePacket(const char *buffer, int len)
   if (len < 1) // 0 bytes or error
     return;
 
+    Serial.printf("new packet! %d bytes, type: %02x\n", len, buffer[0]);
+
   if (len < expectedLength(buffer[0])) // incomplete packet
     return;
 
@@ -50,12 +52,13 @@ void setMotionVectors(const char *buffer)
   // TODO: implement motion vectors
 }
 
-void selectUDP()
-{
+void selectUDP() {
+  Serial.println("switching to UDP mode");
   btMode = false;
 }
 
 void selectBLE() {
+  Serial.println("switching to BLE mode");
   btMode = true;
 }
 
@@ -67,7 +70,9 @@ void selectBtC() {
 
 void enableLogging(const char *buffer)
 {
-  doPrint = buffer[1];
+  doPrint = buffer[1] != 0;
+
+  Serial.printf("logging? %s/%02x\n", doPrint ? "true" : "false", buffer[1]);
 }
 
 void setDebugThrottle(const char *buffer) {
