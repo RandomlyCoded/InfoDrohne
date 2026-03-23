@@ -50,7 +50,7 @@ void loop () {
   if (!btMode) // btle is handled via callbacks
     handleUdp();
   
-  for (auto motor: escMotors) {
+  for (auto &motor: escMotors) {
     motor.update();
 
     if (doPrint)
