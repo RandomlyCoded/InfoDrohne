@@ -86,9 +86,7 @@ signals:
     void useBtLEChanged();
 
     void protocolChanged();
-
     void lowTrimsChanged();
-
     void highTrimsChanged();
     void enableEmeddedLoggingChanged();
 
