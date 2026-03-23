@@ -22,3 +22,5 @@ mv "korad.log" "remote.csv" "diagram.png" "$OUTDIR/"
 mv "output.csv" "$OUTDIR/merged.csv"
 
 echo "finished analyzing $OUTDIR"
+
+vim "$OUTDIR/CHANGELOG.md"
