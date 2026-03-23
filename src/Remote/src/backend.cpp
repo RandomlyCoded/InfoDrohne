@@ -70,6 +70,13 @@ void Backend::setProtocol(const Protocol &newProtocol)
     if (m_protocol == newProtocol)
         return;
 
+    // update protocol
+    switch (newProtocol) {
+    case BtLE: currentDrone()->sendCommand(Drone::Command::OptionSelectBLE); break;
+    case Bt:   currentDrone()->sendCommand(Drone::Command::OptionSelectBtC); break;
+    case Udp:  currentDrone()->sendCommand(Drone::Command::OptionSelectUDP); break;
+    }
+
     currentDrone()->stop();
 
     m_protocol = newProtocol;
