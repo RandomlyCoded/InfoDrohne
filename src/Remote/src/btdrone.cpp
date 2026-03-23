@@ -45,17 +45,13 @@ BtDrone::BtDrone(QObject *parent)
         qWarning() << m_socket->errorString();
         qWarning("failed!");
     }
-
-    connect(m_sendTimer, &QTimer::timeout, this, &randomly::BtDrone::sendCommands);
 }
 
-bool BtDrone::sendCommands()
+bool BtDrone::sendCommand(Command type)
 {
     return false;
 
-    qInfo() << Q_FUNC_INFO << preparePayload().size();
-
-    m_socket->write(preparePayload());
+    m_socket->write(preparePayload(type));
     m_socket->flush();
 
     return true;

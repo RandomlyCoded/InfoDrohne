@@ -16,6 +16,27 @@ quint8 clampU8(int i)
     return qMax(qMin(i, UINT8_MAX), 0);
 }
 
+void writeMotionVectors(QDataStream &stream, const QVector3D direction, const QVector3D rotation)
+{
+    for (int i = 0; i < 3; ++i)
+        stream <<  clampU8(direction[i]);
+
+    for (int i = 0; i < 3; ++i)
+        stream <<  clampU8(rotation[i]);
+}
+
+void writeDebugThrottles(QDataStream &stream, const QList<int> &throttles)
+{
+    // writing the list directly would add separators etc.
+    for (const auto t: throttles)
+        stream << clampU8(t);
+}
+
+void writeLoggingState(QDataStream &stream, const bool logging)
+{
+    stream << logging;
+}
+
 } // namespace
 
 Drone::Drone(QObject *parent)
@@ -25,6 +46,7 @@ Drone::Drone(QObject *parent)
 {
     m_sendTimer->setSingleShot(false);
     m_sendTimer->setInterval(globalInterval());
+    connect(m_sendTimer, &QTimer::timeout, this, &Drone::sendControlCommand);
 
     connect(this, &Drone::throttlesChanged, this, &Drone::dumpThrottles);
 }
@@ -52,30 +74,36 @@ void Drone::forceClampThrottles()
         t = clampU8(t);
 }
 
-QByteArray Drone::preparePayload()
+QByteArray Drone::preparePayload(Command type)
 {
     QByteArray payload;
     QDataStream s{&payload, QIODevice::WriteOnly};
     s.setByteOrder(QDataStream::LittleEndian);
 
-    s << quint8(Backend::instance()->debugMode() << 7); // d000 0000
+    s << type;
 
-    if (Backend::instance()->debugMode()) {
-        // writing the list directly would add separators etc.
-        for (const auto t: m_throttles)
-            s << clampU8(t);
+    switch (type) {
+    case Command::SetMotionVectors: writeMotionVectors(s, m_direction, m_rotation);
+
+    case Command::OptionSelectUDP: break;
+    case Command::OptionSelectBLE: break;
+    case Command::OptionSelectBtC: break; // no more data required
+
+    case Command::DebugSetThrottle: writeDebugThrottles(s, throttles()); break;
+    case Command::DebugEnableLogging: writeLoggingState(s, Backend::instance()->enableEmbeddedLogging()); break;
+        break;
     }
-    else {
-        for (int i = 0; i < 3; ++i)
-            s <<  clampU8(m_direction[i]);
-
-        for (int i = 0; i < 3; ++i)
-            s <<  clampU8(m_rotation[i]);
-    }
-
-//    qInfo() << payload.toHex(':');
 
     return payload;
+}
+
+void Drone::sendControlCommand()
+{
+    if (Backend::instance()->debugMode())
+        sendCommand(Command::DebugSetThrottle);
+
+    else
+        sendCommand(Command::SetMotionVectors);
 }
 
 void Drone::dumpThrottles()

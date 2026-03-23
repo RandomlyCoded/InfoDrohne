@@ -17,6 +17,19 @@ class Drone : public QObject
     Q_PROPERTY(QVector3D rotation READ rotation WRITE setRotation NOTIFY rotationChanged FINAL)
 
 public:
+    enum class Command : quint8 {
+        SetMotionVectors = 0x20,
+
+        OptionSelectUDP = 0x40,
+        OptionSelectBLE = 0x41,
+        OptionSelectBtC = 0x42, // Bluetooth Classic, duh
+
+        DebugSetThrottle   = 0x80,
+        DebugEnableLogging = 0x81
+    };
+
+    Q_ENUM(Command);
+
     explicit Drone(QObject *parent = nullptr);
 
     constexpr static int globalInterval() { return 20; }
@@ -31,7 +44,7 @@ public:
 
 // to-be-specified API:
 public slots:
-    virtual bool sendCommands() = 0;
+    virtual bool sendCommand(randomly::Drone::Command type) = 0;
     virtual void start() = 0;
     virtual void stop() = 0;
 
@@ -48,7 +61,9 @@ signals:
 
 // internal API for consistent data formats
 protected:
-    QByteArray preparePayload();
+    QByteArray preparePayload(Command type);
+
+    void sendControlCommand();
 
     QTimer *m_sendTimer = nullptr;
 

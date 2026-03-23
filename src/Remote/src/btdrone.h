@@ -16,7 +16,7 @@ public:
 
     // Drone interface
 public slots:
-    bool sendCommands();
+    bool sendCommand(randomly::Drone::Command type);
     void start() { m_sendTimer->start(); }
     void stop() { m_sendTimer->stop(); }
 

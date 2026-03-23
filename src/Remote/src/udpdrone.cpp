@@ -28,13 +28,11 @@ UdpDrone::UdpDrone(QObject *parent)
             qCDebug(lcUdpDrone) << "[DEBUG] Received UDP datagram:" << datagram;
         }
     });
-
-    connect(m_sendTimer, &QTimer::timeout, this, &Drone::sendCommands);
 }
 
-bool UdpDrone::sendCommands()
+bool UdpDrone::sendCommand(Command type)
 {
-    const auto payload = preparePayload();
+    const auto payload = preparePayload(type);
 
     return m_sendSocket->writeDatagram(payload, m_drone, m_port) == propCount() * sizeof(quint16);
 }

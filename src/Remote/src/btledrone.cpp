@@ -35,7 +35,6 @@ BtLEDrone::BtLEDrone(QObject *parent)
     startDiscovery();
 
     connect(this, &BtLEDrone::stateChanged, this, &BtLEDrone::onStateChanged);
-    connect(m_sendTimer, &QTimer::timeout, this, &BtLEDrone::sendCommands);
 }
 
 void BtLEDrone::onDeviceDiscovered(const QBluetoothDeviceInfo &deviceInfo)
@@ -157,10 +156,12 @@ void BtLEDrone::onStateChanged()
     m_sendTimer->start();
 }
 
-bool BtLEDrone::sendCommands()
+bool BtLEDrone::sendCommand(Command type)
 {
     auto tx = m_service->characteristic(DroneUUID::ThrottleId);
-    m_service->writeCharacteristic(tx, preparePayload(), QLowEnergyService::WriteWithoutResponse);
+    const auto payload = preparePayload(type);
+
+    m_service->writeCharacteristic(tx, payload, QLowEnergyService::WriteWithoutResponse);
 
     return false;
 }

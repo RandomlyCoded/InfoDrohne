@@ -32,7 +32,7 @@ public:
 
     // Drone interface
 public slots:
-    bool sendCommands();
+    bool sendCommand(randomly::Drone::Command type);
     void start();
     void stop();
 
