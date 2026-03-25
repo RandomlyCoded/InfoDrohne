@@ -21,14 +21,13 @@ class BLECallbacks : public BLECharacteristicCallbacks
 
 void initBLE()
 {
-
   BLEDevice::init("InfoDrone-BLE");
   auto bleServer = BLEDevice::createServer();
 
   auto bleService = bleServer->createService(serviceUUID);
-  auto throttleCharacteristic = bleService->createCharacteristic(characteristicUUID, BLECharacteristic::PROPERTY_WRITE);
+  auto characteristic = bleService->createCharacteristic(characteristicUUID);
 
-  throttleCharacteristic->setCallbacks(new BLECallbacks());
+  characteristic->setCallbacks(new BLECallbacks());
 
   bleService->start();
   bleServer->getAdvertising()->start();
