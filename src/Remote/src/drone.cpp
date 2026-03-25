@@ -89,7 +89,6 @@ QByteArray Drone::preparePayload(Command type)
 
     case Command::DebugSetThrottle: writeDebugThrottles(s, throttles()); break;
     case Command::DebugEnableLogging: writeLoggingState(s, Backend::instance()->enableEmbeddedLogging()); break;
-        break;
     }
 
     return payload;
