@@ -81,7 +81,7 @@ QByteArray Drone::preparePayload(Command type)
     s << type;
 
     switch (type) {
-    case Command::SetMotionVectors: writeMotionVectors(s, m_direction, m_rotation);
+    case Command::SetMotionVectors: writeMotionVectors(s, m_direction, m_rotation); break;
 
     case Command::OptionSelectUDP: break;
     case Command::OptionSelectBLE: break;
