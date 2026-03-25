@@ -42,6 +42,15 @@ void Motor::attach(int pin)
 
   ledcAttach(m_pin, pwmFreq, resolution);
 
+  // arm
+  m_actualSpeed = 1;
+  updateDuty();
+
+  delay(500);
+
+  m_actualSpeed = 0;
+  updateDuty();
+
   setSpeed(0);
 }
 
@@ -63,5 +72,10 @@ void Motor::update()
     return;
   }
 
+  updateDuty();
+}
+
+void Motor::updateDuty()
+{
   ledcWrite(m_pin, speedToDuty(m_actualSpeed));
 }

@@ -20,6 +20,8 @@ private:
   int m_pin = NOT_A_PIN;
   double m_targetSpeed = 0;
   double m_actualSpeed = 0;
+
+  void updateDuty();
 };
 
 #endif // DRONE_MOTOR_H
